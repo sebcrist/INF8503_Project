@@ -218,3 +218,82 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+## log files
+*.log
+*.jou
+*.rpt
+*.vdi
+*.pb
+
+## bitstream
+*.bit
+*.bin
+*.mcs
+*.svf
+*.image
+
+## netlist
+*.edf
+*.edif
+*.vn
+*.vm
+
+## SDF
+*.sdf
+
+## sim dump
+*.vcd
+*.saif
+*.tcf
+*.wdb
+
+## C-files & binaries
+*.elf
+*.a
+*.sa
+*.so
+*.lib
+*.o
+
+## Vivado specific generated dirs & files
+.Xil/
+*.cache/
+*.sim/
+*.runs/
+*.hw/
+*.ip_user_files/
+*.backup.*
+*.debug
+webtalk.*
+vivado_pid*.str
+hs_err_pid*
+xelab.*
+xsim.*
+xvlog.*
+fsm_encoding.os
+tab_*/
+unisims/
+*.dcp
+
+## Block Design & IP generated files
+*/ui/bd_*.ui
+*.bxml
+ipshared/
+
+## Vitis IDE & Vitis HLS specific
+.metadata/
+.analytics/
+_ide/
+.vitis/
+RemoteSystemsTempFiles/
+Export/
+Debug/
+Release/
+proj/
+.crashReporter/
+DSP/fft/run_all_fft_examples.sh
+
+## OS / Editor defaults
+.DS_Store
+.vscode/
