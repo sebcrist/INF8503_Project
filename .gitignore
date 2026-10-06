@@ -71,6 +71,7 @@ xvlog.*
 
 ## checkpoint files
 *.dcp
+!*.srcs/**/*.dcp
 
 
 !**/HW_Vivado.srcs/**
