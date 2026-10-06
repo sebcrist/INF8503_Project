@@ -73,3 +73,7 @@ xvlog.*
 *.dcp
 
 
+!**/HW_Vivado.srcs/**
+!**/HW_Vivado.srcs/**/*
+
+
