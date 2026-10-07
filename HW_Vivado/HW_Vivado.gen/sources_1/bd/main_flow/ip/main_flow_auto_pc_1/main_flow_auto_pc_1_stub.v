@@ -1,10 +1,10 @@
 // Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2022.1 (win64) Build 3526262 Mon Apr 18 15:48:16 MDT 2022
-// Date        : Mon Oct  5 17:47:57 2026
-// Host        : Seb_PC running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode synth_stub
-//               c:/Users/sebcr/OneDrive/Desktop/INF8503/ORB_accelerator/HW_Vivado/HW_Vivado.gen/sources_1/bd/main_flow/ip/main_flow_auto_pc_1/main_flow_auto_pc_1_stub.v
+// Date        : Mon Oct  5 20:42:56 2026
+// Host        : DESKTOP-LI7N1CO running 64-bit major release  (build 9200)
+// Command     : write_verilog -force -mode synth_stub -rename_top main_flow_auto_pc_1 -prefix
+//               main_flow_auto_pc_1_ main_flow_auto_pc_1_stub.v
 // Design      : main_flow_auto_pc_1
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7z020clg400-1

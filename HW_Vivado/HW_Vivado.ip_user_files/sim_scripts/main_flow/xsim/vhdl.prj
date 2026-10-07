@@ -1,0 +1,20 @@
+vhdl xil_defaultlib  \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/DVI_Constants.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/ChannelBond.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/SyncAsync.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/GlitchFilter.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/TWI_SlaveCtl.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/EEPROM_8b.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/InputSERDES.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/PhaseAlign.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/ResyncToBUFG.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/SyncAsyncReset.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/SyncBase.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/TMDS_Clocking.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/TMDS_Decoder.vhd" \
+"../../../../HW_Vivado.gen/sources_1/bd/main_flow/ipshared/f99d/src/dvi2rgb.vhd" \
+"../../../bd/main_flow/ip/main_flow_dvi2rgb_0_0/sim/main_flow_dvi2rgb_0_0.vhd" \
+"../../../bd/main_flow/ip/main_flow_axi_vdma_0_0/sim/main_flow_axi_vdma_0_0.vhd" \
+"../../../bd/main_flow/ip/main_flow_rst_ps7_0_100M_0/sim/main_flow_rst_ps7_0_100M_0.vhd" \
+
+nosort

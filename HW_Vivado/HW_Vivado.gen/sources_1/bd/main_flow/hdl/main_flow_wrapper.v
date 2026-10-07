@@ -1,8 +1,8 @@
 //Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
 //Tool Version: Vivado v.2022.1 (win64) Build 3526262 Mon Apr 18 15:48:16 MDT 2022
-//Date        : Mon Oct  5 17:45:16 2026
-//Host        : Seb_PC running 64-bit major release  (build 9200)
+//Date        : Tue Oct  6 20:50:48 2026
+//Host        : DESKTOP-LI7N1CO running 64-bit major release  (build 9200)
 //Command     : generate_target main_flow_wrapper.bd
 //Design      : main_flow_wrapper
 //Purpose     : IP block netlist
@@ -31,6 +31,7 @@ module main_flow_wrapper
     FIXED_IO_ps_clk,
     FIXED_IO_ps_porb,
     FIXED_IO_ps_srstb,
+    btns_4bits_tri_i,
     hdmi_in_clk_n,
     hdmi_in_clk_p,
     hdmi_in_data_n,
@@ -59,6 +60,7 @@ module main_flow_wrapper
   inout FIXED_IO_ps_clk;
   inout FIXED_IO_ps_porb;
   inout FIXED_IO_ps_srstb;
+  input [3:0]btns_4bits_tri_i;
   input hdmi_in_clk_n;
   input hdmi_in_clk_p;
   input [2:0]hdmi_in_data_n;
@@ -88,6 +90,7 @@ module main_flow_wrapper
   wire FIXED_IO_ps_clk;
   wire FIXED_IO_ps_porb;
   wire FIXED_IO_ps_srstb;
+  wire [3:0]btns_4bits_tri_i;
   wire hdmi_in_clk_n;
   wire hdmi_in_clk_p;
   wire [2:0]hdmi_in_data_n;
@@ -134,6 +137,7 @@ module main_flow_wrapper
         .FIXED_IO_ps_clk(FIXED_IO_ps_clk),
         .FIXED_IO_ps_porb(FIXED_IO_ps_porb),
         .FIXED_IO_ps_srstb(FIXED_IO_ps_srstb),
+        .btns_4bits_tri_i(btns_4bits_tri_i),
         .hdmi_in_clk_n(hdmi_in_clk_n),
         .hdmi_in_clk_p(hdmi_in_clk_p),
         .hdmi_in_data_n(hdmi_in_data_n),
