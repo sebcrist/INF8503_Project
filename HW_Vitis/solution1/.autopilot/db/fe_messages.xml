@@ -1,0 +1,6 @@
+<xilinx:hls_fe_msgs>
+    <msg msg_groups="" msg_id="207-812" msg_severity="ERROR" msg_loc="HW_Vitis/src/gaussian.cpp:3:10" msg_body="'common/xf_infra.hpp' file not found">
+        <args/>
+    </msg>
+</xilinx:hls_fe_msgs>
+
