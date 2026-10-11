@@ -1,88 +1,90 @@
-# ==========================================
-# Python, OS, and Editor Defaults
-# ==========================================
-__pycache__/
-*.py[codz]
-*$py.class
-*.so
-build/
-dist/
-*.egg-info/
-.env
-.venv/
-env/
-venv/
-.DS_Store
-.vscode/
+#########################################################################################
+##  Project    : Collect of various scripts for working with EDA-tools (ASIC/FPGA/etc) ##
+##  Link       : https://github.com/iDoka/eda-scripts                                  ##
+##  Description: .gitignore                                                            ##
+##  Usage      : just rename or add contain to .gitignore ; Thank you iDoka            ##
+##  License    : MIT                                                                   ##
+#########################################################################################
 
-# ==========================================
-# Vivado & FPGA Build Artifacts
-# ==========================================
-# Log, trace, and status files
+## log files
 *.log
 *.jou
 *.rpt
 *.vdi
-*.pb
+
+## bitstream
+*.bit
+*.bin
+*.mcs
+*.svf
+*.image
+
+## netlist
+*.edf
+*.edif
+*.vn
+*.vm
+
+## SDF
+*.sdf
+
+## sim dump
+*.vcd
+*.saif
+*.tcf
+*.wdb
+
+## others
+unisims
+
+## C-files
+*.elf
+*.a
+*.sa
+*.so
+*.lib
+
+## dirs
+*.cache/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.sim/
+*.gen/
+
+###### for Xilinx Vivado|ISE
+.Xil/
+.cache/
+fsm_encoding.os
+tab_*/
 webtalk.*
 vivado_pid*.str
 hs_err_pid*
 xelab.*
 xsim.*
 xvlog.*
-fsm_encoding.os
-tab_*/
-unisims/
-
-# Bitstreams and compiled designs
-*.bit
-*.bin
-*.mcs
-*.svf
-*.image
-*.dcp
-*.edf
-*.edif
-*.vn
-*.vm
-
-# Simulation dumps & waveforms
-*.vcd
-*.saif
-*.tcf
-*.wdb
-
-# C/C++ compiled binaries & objects
-*.elf
-*.a
-*.sa
-*.lib
-*.o
-
-# Vivado project work directories
-.Xil/
-*.cache/
-*.sim/
-*.runs/
-*.hw/
-*.ip_user_files/
+*.cache
+*.sim
+*.runs
+*.hw
 *.backup.*
 *.debug
 
-# Block Design & IP generated output directories (FIX FOR YOUR WARNINGS)
-*.gen/
-*/ui/bd_*.ui
-*.bxml
-ipshared/
+## checkpoint files
+*.dcp
 
-# Vitis IDE & Embedded SW workspace
-.metadata/
-.analytics/
-_ide/
-.vitis/
-RemoteSystemsTempFiles/
-Export/
-Debug/
-Release/
-proj/
-.crashReporter/
+!**/HW_Vivado.srcs/**
+!**/HW_Vivado.srcs/**/*
+
+# NEW LINES BELOW
+**/HW_Vivado.srcs/sources_1/bd/*/ip/
+**/HW_Vivado.srcs/sources_1/bd/*/ipshared/
+**/HW_Vivado.srcs/sources_1/bd/*/hdl/
+**/HW_Vivado.srcs/sources_1/bd/*/hw_handoff/
+**/HW_Vivado.srcs/sources_1/bd/*/sim/
+**/HW_Vivado.srcs/sources_1/bd/*/synth/
+**/HW_Vivado.srcs/sources_1/bd/*/ui/
+**/sources_1/bd/*/ui/
+*.ui
+*.bda
+**/NA/
