@@ -232,8 +232,14 @@
           "PCW_CAN0_PERIPHERAL_CLKSRC": {
             "value": "External"
           },
+          "PCW_CAN0_PERIPHERAL_ENABLE": {
+            "value": "0"
+          },
           "PCW_CAN1_PERIPHERAL_CLKSRC": {
             "value": "External"
+          },
+          "PCW_CAN1_PERIPHERAL_ENABLE": {
+            "value": "0"
           },
           "PCW_CAN_PERIPHERAL_CLKSRC": {
             "value": "IO PLL"
@@ -590,6 +596,12 @@
             "value": "MIO"
           },
           "PCW_GPIO_PERIPHERAL_ENABLE": {
+            "value": "0"
+          },
+          "PCW_I2C0_PERIPHERAL_ENABLE": {
+            "value": "0"
+          },
+          "PCW_I2C1_PERIPHERAL_ENABLE": {
             "value": "0"
           },
           "PCW_I2C_RESET_ENABLE": {
@@ -1261,6 +1273,9 @@
           "PCW_PERIPHERAL_BOARD_PRESET": {
             "value": "part0"
           },
+          "PCW_PJTAG_PERIPHERAL_ENABLE": {
+            "value": "0"
+          },
           "PCW_PLL_BYPASSMODE_ENABLE": {
             "value": "0"
           },
@@ -1393,17 +1408,14 @@
           "PCW_S_AXI_HP0_ID_WIDTH": {
             "value": "6"
           },
-          "PCW_S_AXI_HP1_DATA_WIDTH": {
-            "value": "64"
-          },
-          "PCW_S_AXI_HP2_DATA_WIDTH": {
-            "value": "64"
-          },
-          "PCW_S_AXI_HP3_DATA_WIDTH": {
-            "value": "64"
-          },
           "PCW_TPIU_PERIPHERAL_CLKSRC": {
             "value": "External"
+          },
+          "PCW_TRACE_INTERNAL_WIDTH": {
+            "value": "2"
+          },
+          "PCW_TRACE_PERIPHERAL_ENABLE": {
+            "value": "0"
           },
           "PCW_TTC0_CLK0_PERIPHERAL_CLKSRC": {
             "value": "CPU_1X"
@@ -1423,6 +1435,9 @@
           "PCW_TTC0_CLK2_PERIPHERAL_DIVISOR0": {
             "value": "1"
           },
+          "PCW_TTC0_PERIPHERAL_ENABLE": {
+            "value": "0"
+          },
           "PCW_TTC1_CLK0_PERIPHERAL_CLKSRC": {
             "value": "CPU_1X"
           },
@@ -1440,6 +1455,9 @@
           },
           "PCW_TTC1_CLK2_PERIPHERAL_DIVISOR0": {
             "value": "1"
+          },
+          "PCW_TTC1_PERIPHERAL_ENABLE": {
+            "value": "0"
           },
           "PCW_UART0_BASEADDR": {
             "value": "0xE0000000"
@@ -1770,6 +1788,9 @@
           },
           "PCW_WDT_PERIPHERAL_DIVISOR0": {
             "value": "1"
+          },
+          "PCW_WDT_PERIPHERAL_ENABLE": {
+            "value": "0"
           }
         },
         "interface_ports": {
@@ -1924,8 +1945,8 @@
       },
       "CONSTANT_1": {
         "vlnv": "xilinx.com:ip:xlconstant:1.1",
-        "xci_name": "main_flow_xlconstant_0_0",
-        "xci_path": "ip\\main_flow_xlconstant_0_0\\main_flow_xlconstant_0_0.xci",
+        "xci_name": "main_flow_CONSTANT_1_0",
+        "xci_path": "ip\\main_flow_CONSTANT_1_0\\main_flow_CONSTANT_1_0.xci",
         "inst_hier_path": "CONSTANT_1"
       },
       "v_vid_in_axi4s_0": {
@@ -2933,8 +2954,8 @@
       },
       "v_tpg_0": {
         "vlnv": "xilinx.com:ip:v_tpg:8.2",
-        "xci_name": "main_flow_v_tpg_0_2",
-        "xci_path": "ip\\main_flow_v_tpg_0_2\\main_flow_v_tpg_0_2.xci",
+        "xci_name": "main_flow_v_tpg_0_0",
+        "xci_path": "ip\\main_flow_v_tpg_0_0\\main_flow_v_tpg_0_0.xci",
         "inst_hier_path": "v_tpg_0",
         "parameters": {
           "HAS_AXI4S_SLAVE": {
@@ -2979,8 +3000,8 @@
       },
       "axis_switch_0": {
         "vlnv": "xilinx.com:ip:axis_switch:1.1",
-        "xci_name": "main_flow_axis_switch_0_1",
-        "xci_path": "ip\\main_flow_axis_switch_0_1\\main_flow_axis_switch_0_1.xci",
+        "xci_name": "main_flow_axis_switch_0_0",
+        "xci_path": "ip\\main_flow_axis_switch_0_0\\main_flow_axis_switch_0_0.xci",
         "inst_hier_path": "axis_switch_0",
         "parameters": {
           "ROUTING_MODE": {
@@ -2990,14 +3011,14 @@
       },
       "xlconcat_0": {
         "vlnv": "xilinx.com:ip:xlconcat:2.1",
-        "xci_name": "main_flow_xlconcat_0_1",
-        "xci_path": "ip\\main_flow_xlconcat_0_1\\main_flow_xlconcat_0_1.xci",
+        "xci_name": "main_flow_xlconcat_0_0",
+        "xci_path": "ip\\main_flow_xlconcat_0_0\\main_flow_xlconcat_0_0.xci",
         "inst_hier_path": "xlconcat_0"
       },
       "axi_intc_0": {
         "vlnv": "xilinx.com:ip:axi_intc:4.1",
-        "xci_name": "main_flow_axi_intc_0_2",
-        "xci_path": "ip\\main_flow_axi_intc_0_2\\main_flow_axi_intc_0_2.xci",
+        "xci_name": "main_flow_axi_intc_0_0",
+        "xci_path": "ip\\main_flow_axi_intc_0_0\\main_flow_axi_intc_0_0.xci",
         "inst_hier_path": "axi_intc_0",
         "parameters": {
           "C_HAS_FAST": {
@@ -3010,8 +3031,8 @@
       },
       "axi_gpio_0": {
         "vlnv": "xilinx.com:ip:axi_gpio:2.0",
-        "xci_name": "main_flow_axi_gpio_0_1",
-        "xci_path": "ip\\main_flow_axi_gpio_0_1\\main_flow_axi_gpio_0_1.xci",
+        "xci_name": "main_flow_axi_gpio_0_0",
+        "xci_path": "ip\\main_flow_axi_gpio_0_0\\main_flow_axi_gpio_0_0.xci",
         "inst_hier_path": "axi_gpio_0",
         "parameters": {
           "C_IS_DUAL": {
