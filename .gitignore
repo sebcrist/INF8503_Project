@@ -102,3 +102,7 @@ hls.app
 script.tcl
 .cproject
 .project
+**/sources_1/bd/*/ui/
+*.ui
+*.bda
+**/NA/
