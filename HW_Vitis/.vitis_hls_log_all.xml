@@ -3,7 +3,7 @@
   <errorLogs>
     <logs>
       <synLog>
-        <logs message="ERROR: [HLS 207-812] 'common/xf_infra.hpp' file not found (HW_Vitis/src/gaussian.cpp:3:10)" projectName="HW_Vitis" solutionName="solution1" date="2026-10-09T21:43:53.793-0400"/>
+        <logs message="ERROR: [HLS 207-812] 'common/xf_common.hpp' file not found (HW_Vitis/src/gaussian.cpp:3:10)" projectName="HW_Vitis" solutionName="solution1" date="2026-10-12T21:37:29.604-0400"/>
       </synLog>
       <simLog/>
       <mgLog/>

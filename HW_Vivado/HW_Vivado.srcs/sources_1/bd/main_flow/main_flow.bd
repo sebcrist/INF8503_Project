@@ -40,7 +40,8 @@
       "axis_switch_0": "",
       "xlconcat_0": "",
       "axi_intc_0": "",
-      "axi_gpio_0": ""
+      "axi_gpio_0": "",
+      "gaussian_0": ""
     },
     "interface_ports": {
       "hdmi_in": {
@@ -1994,11 +1995,11 @@
         },
         "addressing": {
           "address_spaces": {
-            "Data_S2MM": {
+            "Data_MM2S": {
               "range": "4G",
               "width": "32"
             },
-            "Data_MM2S": {
+            "Data_S2MM": {
               "range": "4G",
               "width": "32"
             }
@@ -3282,6 +3283,12 @@
             "value": "true"
           }
         }
+      },
+      "gaussian_0": {
+        "vlnv": "xilinx.com:hls:gaussian:1.0",
+        "xci_name": "main_flow_gaussian_0_0",
+        "xci_path": "ip\\main_flow_gaussian_0_0\\main_flow_gaussian_0_0.xci",
+        "inst_hier_path": "gaussian_0"
       }
     },
     "interface_nets": {
@@ -3324,13 +3331,19 @@
       "axis_switch_0_M00_AXIS": {
         "interface_ports": [
           "axis_switch_0/M00_AXIS",
-          "axi_vdma_0/S_AXIS_S2MM"
+          "gaussian_0/streamIn"
         ]
       },
       "dvi2rgb_0_DDC": {
         "interface_ports": [
           "hdmi_in_ddc",
           "dvi2rgb_0/DDC"
+        ]
+      },
+      "gaussian_0_streamOut": {
+        "interface_ports": [
+          "gaussian_0/streamOut",
+          "axi_vdma_0/S_AXIS_S2MM"
         ]
       },
       "processing_system7_0_DDR": {
@@ -3465,7 +3478,8 @@
           "ps7_0_axi_periph/M04_ACLK",
           "axi_vdma_0/m_axi_mm2s_aclk",
           "axi_mem_intercon/S01_ACLK",
-          "axi_vdma_0/m_axis_mm2s_aclk"
+          "axi_vdma_0/m_axis_mm2s_aclk",
+          "gaussian_0/ap_clk"
         ]
       },
       "processing_system7_0_FCLK_CLK1": {
@@ -3512,7 +3526,8 @@
           "ps7_0_axi_periph/M03_ARESETN",
           "axi_gpio_0/s_axi_aresetn",
           "ps7_0_axi_periph/M04_ARESETN",
-          "axi_mem_intercon/S01_ARESETN"
+          "axi_mem_intercon/S01_ARESETN",
+          "gaussian_0/ap_rst_n"
         ]
       },
       "v_tpg_0_interrupt": {
@@ -3575,7 +3590,7 @@
       },
       "/axi_vdma_0": {
         "address_spaces": {
-          "Data_S2MM": {
+          "Data_MM2S": {
             "segments": {
               "SEG_processing_system7_0_HP0_DDR_LOWOCM": {
                 "address_block": "/processing_system7_0/S_AXI_HP0/HP0_DDR_LOWOCM",
@@ -3584,7 +3599,7 @@
               }
             }
           },
-          "Data_MM2S": {
+          "Data_S2MM": {
             "segments": {
               "SEG_processing_system7_0_HP0_DDR_LOWOCM": {
                 "address_block": "/processing_system7_0/S_AXI_HP0/HP0_DDR_LOWOCM",

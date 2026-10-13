@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>HW_Vitis</name>
+	<name>HWVitis</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -40,11 +40,6 @@
 			<name>.reference/xf_cvt_color.hpp</name>
 			<type>1</type>
 			<location>D:/PROJECTS/INF8503_Project/External/Vitis_Libraries/vision/L1/include/imgproc/xf_cvt_color.hpp</location>
-		</link>
-		<link>
-			<name>.reference/xf_infra.hpp</name>
-			<type>1</type>
-			<location>D:/PROJECTS/INF8503_Project/External/Vitis_Libraries/vision/L1/include/common/xf_infra.hpp</location>
 		</link>
 		<link>
 			<name>solution1/constraints</name>
