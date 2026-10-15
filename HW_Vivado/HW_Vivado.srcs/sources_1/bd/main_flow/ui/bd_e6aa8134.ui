@@ -33,8 +33,8 @@ preplace netloc processing_system7_0_FCLK_RESET0_N 1 3 3 1160 660 1550 610 2050
 preplace netloc rst_ps7_0_100M_mb_reset 1 4 1 1490 210n
 preplace netloc rst_ps7_0_100M_peripheral_aresetn 1 0 5 50 710 440 620 760 700 NJ 700 1540
 preplace netloc v_tpg_0_interrupt 1 1 3 400J 220 NJ 220 NJ
-preplace netloc xlconstant_0_dout 1 0 6 30 730 430 820 N 820 N 820 N 820 2080J
 preplace netloc xlconcat_0_dout 1 4 1 1480J 170n
+preplace netloc xlconstant_0_dout 1 0 6 30 730 430 820 N 820 N 820 N 820 2080J
 preplace netloc TMDS_0_1 1 0 1 20J 580n
 preplace netloc axi_gpio_0_GPIO 1 5 1 2080J 650n
 preplace netloc axi_mem_intercon_M00_AXI 1 4 1 1500 390n

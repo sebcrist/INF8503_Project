@@ -24,6 +24,8 @@ if ($LASTEXITCODE -ne 0) {
     exit 1
 }
 
+
+#TRANSFER .bit AND .hwh
 $bitFile = Get-ChildItem -Path "$PSScriptRoot\.." -Filter *.bit -Recurse -File | Select-Object -First 1
 
 $hwhFile = Get-ChildItem -Path "$PSScriptRoot\.." -Filter *.hwh -Recurse -File | Select-Object -First 1
@@ -52,6 +54,33 @@ if ($LASTEXITCODE -ne 0) {
     Write-Host "Failed to transfer $($hwhFile.FullName)." -ForegroundColor Red
     exit 1
 }
+
+
+#TRANSFER IMAGES
+
+$localImagesDir = "$PSScriptRoot\images"
+$remoteImagesDir = "$TargetDir/images"
+
+if (Test-Path $localImagesDir) {
+    Write-Host "`nTransferring images directory to the FPGA..." -ForegroundColor Cyan
+    
+    # Create remote images directory
+    ssh -i "$sshKeyPath" ${BoardUser}@${BoardHost} "mkdir -p '$remoteImagesDir'"
+    
+    # Copy all images over
+    Get-ChildItem -Path $localImagesDir -File | ForEach-Object {
+        scp -i "$sshKeyPath" $_.FullName "${BoardUser}@${BoardHost}:${remoteImagesDir}/$($_.Name)"
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Failed to transfer image: $($_.Name)" -ForegroundColor Red
+        } else {
+            Write-Host "Transferred: $($_.Name)" -ForegroundColor Green
+        }
+    }
+} else {
+    Write-Host "`n[WARNING] No 'images' folder found at $localImagesDir. Skipping image transfer." -ForegroundColor Yellow
+}
+
+
 
 $bitDate = $bitFile.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
 $hwhDate = $hwhFile.LastWriteTime.ToString("yyyy-MM-dd HH:mm:ss")
