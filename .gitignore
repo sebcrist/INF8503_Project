@@ -43,6 +43,8 @@ unisims
 *.sa
 *.so
 *.lib
+__pycache__/
+*.pyc
 
 ## dirs
 *.cache/
@@ -72,6 +74,7 @@ xvlog.*
 
 ## checkpoint files
 *.dcp
+.ipynb_checkpoints/
 
 !**/HW_Vivado.srcs/**
 !**/HW_Vivado.srcs/**/*
@@ -106,3 +109,4 @@ script.tcl
 *.ui
 *.bda
 **/NA/
+/HW_Vitis/solution1/
