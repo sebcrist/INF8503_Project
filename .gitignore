@@ -110,3 +110,4 @@ script.tcl
 *.bda
 **/NA/
 /HW_Vitis/solution1/
+/ip_repo/

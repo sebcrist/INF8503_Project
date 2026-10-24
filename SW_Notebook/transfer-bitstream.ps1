@@ -26,9 +26,9 @@ if ($LASTEXITCODE -ne 0) {
 
 
 #TRANSFER .bit AND .hwh
-$bitFile = Get-ChildItem -Path "$PSScriptRoot\.." -Filter *.bit -Recurse -File | Select-Object -First 1
+$bitFile = Get-ChildItem -Path "$PSScriptRoot\.." -Filter *.bit -Recurse -File | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 
-$hwhFile = Get-ChildItem -Path "$PSScriptRoot\.." -Filter *.hwh -Recurse -File | Select-Object -First 1
+$hwhFile = Get-ChildItem -Path "$PSScriptRoot\.." -Filter *.hwh -Recurse -File | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 
 if (-not $bitFile -or -not$hwhFile) {
     Write-Host "Missing .bit or .hwh file." -ForegroundColor Red

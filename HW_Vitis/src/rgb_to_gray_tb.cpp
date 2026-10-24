@@ -56,8 +56,8 @@ int main(int argc, char** argv) {
     }
 
     std::cout << "Nbr of errors: " << err_cnt << std::endl;
-    cv::imwrite("./ImageOut/out_rgb2gray_hls.png", img_out);
-    cv::imwrite("./ImageOut/out_rgb2gray_ref.png", img_ref);
+    cv::imwrite("./out_rgb2gray_hls.png", img_out);
+    cv::imwrite("./out_rgb2gray_ref.png", img_ref);
 
     if (err_cnt)
         std::cerr << "Test FAILED!" << std::endl;
