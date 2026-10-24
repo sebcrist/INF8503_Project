@@ -1,5 +1,15 @@
-set prj_dir [get_property DIRECTORY [current_project]] 
-set logs_dir "$prj_dir/scripts/logs"
+# Locate the permanent HW_Vivado/scripts/logs directory so logs are NEVER
+# wiped when Vivado cleans HW_Vivado.runs/impl_1 on re-runs
+if {[info script] ne ""} {
+    set script_dir [file normalize [file dirname [info script]]]
+} else {
+    set script_dir [file normalize "[get_property DIRECTORY [current_project]]/scripts"]
+}
+regsub {/HW_Vivado\.runs/.*} $script_dir "" root_hw
+if {$root_hw ne $script_dir} {
+    set script_dir "$root_hw/scripts"
+}
+set logs_dir "$script_dir/logs"
 file mkdir $logs_dir
 
 set timestamp [clock format [clock seconds] -format {%Y%m%d_%H%M%S}] 

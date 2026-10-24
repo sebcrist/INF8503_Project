@@ -16,7 +16,9 @@
       "v_tpg_0": "",
       "orb_pipeline": {
         "axis_switch_0": "",
-        "rgb_to_gray_0": ""
+        "gauss_resize_0": "",
+        "rgb_to_gray_0": "",
+        "fast_corner_0": ""
       },
       "hdmi": {
         "v_vid_in_axi4s_0": "",
@@ -324,11 +326,23 @@
               }
             }
           },
+          "gauss_resize_0": {
+            "vlnv": "xilinx.com:hls:gauss_resize:1.0",
+            "xci_name": "main_flow_gauss_resize_0_0",
+            "xci_path": "ip\\main_flow_gauss_resize_0_0\\main_flow_gauss_resize_0_0.xci",
+            "inst_hier_path": "orb_pipeline/gauss_resize_0"
+          },
           "rgb_to_gray_0": {
             "vlnv": "xilinx.com:hls:rgb_to_gray:1.0",
             "xci_name": "main_flow_rgb_to_gray_0_0",
             "xci_path": "ip\\main_flow_rgb_to_gray_0_0\\main_flow_rgb_to_gray_0_0.xci",
             "inst_hier_path": "orb_pipeline/rgb_to_gray_0"
+          },
+          "fast_corner_0": {
+            "vlnv": "xilinx.com:hls:fast_corner:1.0",
+            "xci_name": "main_flow_fast_corner_0_0",
+            "xci_path": "ip\\main_flow_fast_corner_0_0\\main_flow_fast_corner_0_0.xci",
+            "inst_hier_path": "orb_pipeline/fast_corner_0"
           }
         },
         "interface_nets": {
@@ -344,6 +358,18 @@
               "axis_switch_0/M00_AXIS"
             ]
           },
+          "fast_corner_0_streamOut": {
+            "interface_ports": [
+              "streamOut",
+              "fast_corner_0/streamOut"
+            ]
+          },
+          "gauss_resize_0_streamOut": {
+            "interface_ports": [
+              "gauss_resize_0/streamOut",
+              "fast_corner_0/streamIn"
+            ]
+          },
           "ps7_0_axi_periph_M03_AXI": {
             "interface_ports": [
               "S_AXI_CTRL",
@@ -352,8 +378,8 @@
           },
           "rgb_to_gray_0_streamOut": {
             "interface_ports": [
-              "streamOut",
-              "rgb_to_gray_0/streamOut"
+              "rgb_to_gray_0/streamOut",
+              "gauss_resize_0/streamIn"
             ]
           },
           "v_tpg_0_m_axis_video": {
@@ -373,13 +399,17 @@
           "axi_gpio_1_gpio2_io_o": {
             "ports": [
               "cols",
-              "rgb_to_gray_0/cols"
+              "gauss_resize_0/in_cols",
+              "rgb_to_gray_0/cols",
+              "fast_corner_0/cols"
             ]
           },
           "axi_gpio_1_gpio_io_o": {
             "ports": [
               "rows",
-              "rgb_to_gray_0/rows"
+              "gauss_resize_0/in_rows",
+              "rgb_to_gray_0/rows",
+              "fast_corner_0/rows"
             ]
           },
           "processing_system7_0_FCLK_CLK0": {
@@ -387,7 +417,9 @@
               "s_axi_ctrl_aclk",
               "axis_switch_0/s_axi_ctrl_aclk",
               "axis_switch_0/aclk",
-              "rgb_to_gray_0/ap_clk"
+              "gauss_resize_0/ap_clk",
+              "rgb_to_gray_0/ap_clk",
+              "fast_corner_0/ap_clk"
             ]
           },
           "rst_ps7_0_100M_peripheral_aresetn": {
@@ -395,7 +427,9 @@
               "s_axi_ctrl_aresetn",
               "axis_switch_0/s_axi_ctrl_aresetn",
               "axis_switch_0/aresetn",
-              "rgb_to_gray_0/ap_rst_n"
+              "gauss_resize_0/ap_rst_n",
+              "rgb_to_gray_0/ap_rst_n",
+              "fast_corner_0/ap_rst_n"
             ]
           }
         }
@@ -4041,6 +4075,12 @@
           "hdmi/hdmi_in_ddc"
         ]
       },
+      "orb_pipeline_streamOut": {
+        "interface_ports": [
+          "axi_vdma_0/S_AXIS_S2MM",
+          "orb_pipeline/streamOut"
+        ]
+      },
       "processing_system7_0_DDR": {
         "interface_ports": [
           "DDR",
@@ -4093,12 +4133,6 @@
         "interface_ports": [
           "peripherals_interconnect/M05_AXI",
           "axi_gpios/S_AXI1"
-        ]
-      },
-      "rgb_to_gray_0_streamOut": {
-        "interface_ports": [
-          "orb_pipeline/streamOut",
-          "axi_vdma_0/S_AXIS_S2MM"
         ]
       },
       "v_tpg_0_m_axis_video": {
