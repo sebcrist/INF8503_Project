@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
-  <source/>
-  <testbench/>
+  <source>
+    <originFiles name="gauss_resize.cpp" path="D:\INF8503_Project\HW_Vitis\src\gauss_resize.cpp"/>
+  </source>
+  <testbench>
+    <originFiles name="gauss_resize_tb.cpp" path="D:\INF8503_Project\HW_Vitis\src\gauss_resize_tb.cpp"/>
+  </testbench>
 </autopilotfilemapping:AutoPilotFileMapping>

@@ -16,9 +16,9 @@
       "v_tpg_0": "",
       "orb_pipeline": {
         "axis_switch_0": "",
-        "gauss_resize_0": "",
         "rgb_to_gray_0": "",
-        "fast_corner_0": ""
+        "fast_corner_0": "",
+        "gauss_resize_0": ""
       },
       "hdmi": {
         "v_vid_in_axi4s_0": "",
@@ -326,12 +326,6 @@
               }
             }
           },
-          "gauss_resize_0": {
-            "vlnv": "xilinx.com:hls:gauss_resize:1.0",
-            "xci_name": "main_flow_gauss_resize_0_0",
-            "xci_path": "ip\\main_flow_gauss_resize_0_0\\main_flow_gauss_resize_0_0.xci",
-            "inst_hier_path": "orb_pipeline/gauss_resize_0"
-          },
           "rgb_to_gray_0": {
             "vlnv": "xilinx.com:hls:rgb_to_gray:1.0",
             "xci_name": "main_flow_rgb_to_gray_0_0",
@@ -343,6 +337,12 @@
             "xci_name": "main_flow_fast_corner_0_0",
             "xci_path": "ip\\main_flow_fast_corner_0_0\\main_flow_fast_corner_0_0.xci",
             "inst_hier_path": "orb_pipeline/fast_corner_0"
+          },
+          "gauss_resize_0": {
+            "vlnv": "xilinx.com:hls:gauss_resize:1.0",
+            "xci_name": "main_flow_gauss_resize_0_0",
+            "xci_path": "ip\\main_flow_gauss_resize_0_0\\main_flow_gauss_resize_0_0.xci",
+            "inst_hier_path": "orb_pipeline/gauss_resize_0"
           }
         },
         "interface_nets": {
@@ -358,15 +358,15 @@
               "axis_switch_0/M00_AXIS"
             ]
           },
-          "fast_corner_0_streamOut": {
+          "fast_corner_0_cornerMask": {
             "interface_ports": [
               "streamOut",
-              "fast_corner_0/streamOut"
+              "fast_corner_0/cornerMask"
             ]
           },
-          "gauss_resize_0_streamOut": {
+          "gauss_resize_0_streamOutScaledDown": {
             "interface_ports": [
-              "gauss_resize_0/streamOut",
+              "gauss_resize_0/streamOutScaledDown",
               "fast_corner_0/streamIn"
             ]
           },
@@ -399,16 +399,26 @@
           "axi_gpio_1_gpio2_io_o": {
             "ports": [
               "cols",
-              "gauss_resize_0/in_cols",
               "rgb_to_gray_0/cols",
-              "fast_corner_0/cols"
+              "gauss_resize_0/cols"
             ]
           },
           "axi_gpio_1_gpio_io_o": {
             "ports": [
               "rows",
-              "gauss_resize_0/in_rows",
               "rgb_to_gray_0/rows",
+              "gauss_resize_0/rows"
+            ]
+          },
+          "gauss_resize_0_out_cols": {
+            "ports": [
+              "gauss_resize_0/colsScaledDown",
+              "fast_corner_0/cols"
+            ]
+          },
+          "gauss_resize_0_out_rows": {
+            "ports": [
+              "gauss_resize_0/rowsScaledDown",
               "fast_corner_0/rows"
             ]
           },
@@ -417,9 +427,9 @@
               "s_axi_ctrl_aclk",
               "axis_switch_0/s_axi_ctrl_aclk",
               "axis_switch_0/aclk",
-              "gauss_resize_0/ap_clk",
               "rgb_to_gray_0/ap_clk",
-              "fast_corner_0/ap_clk"
+              "fast_corner_0/ap_clk",
+              "gauss_resize_0/ap_clk"
             ]
           },
           "rst_ps7_0_100M_peripheral_aresetn": {
@@ -427,9 +437,9 @@
               "s_axi_ctrl_aresetn",
               "axis_switch_0/s_axi_ctrl_aresetn",
               "axis_switch_0/aresetn",
-              "gauss_resize_0/ap_rst_n",
               "rgb_to_gray_0/ap_rst_n",
-              "fast_corner_0/ap_rst_n"
+              "fast_corner_0/ap_rst_n",
+              "gauss_resize_0/ap_rst_n"
             ]
           }
         }
@@ -3893,6 +3903,9 @@
           },
           "PCW_WDT_PERIPHERAL_ENABLE": {
             "value": "0"
+          },
+          "preset": {
+            "value": "None"
           }
         },
         "interface_ports": {

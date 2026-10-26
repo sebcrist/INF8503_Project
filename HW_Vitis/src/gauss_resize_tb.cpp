@@ -6,14 +6,16 @@
 
 typedef ap_axiu<8, 1, 1, 1> axiData;
 
-void gauss_resize(hls::stream<axiData>& streamIn, hls::stream<axiData>& streamOut, int in_rows, int in_cols);
+void gauss_resize(hls::stream<axiData>& streamIn, hls::stream<axiData>& streamOut, hls::stream<axiData>& streamOutScaledDown, int rows, int cols, int* rowsScaledDown, int* colsScaledDown);
 
 int main(int argc, char** argv) {
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <input_image_path>" << std::endl;
         return -1;
     }
-    cv::Mat img_in = cv::imread(argv[1], cv::IMREAD_COLOR);
+
+    cv::Mat img_in = cv::imread(argv[1], cv::IMREAD_GRAYSCALE);
+
     if (img_in.empty() ) {
         std::cerr << "Error: Cannot open image " << argv[1] << std::endl;
         return -1;
@@ -25,30 +27,32 @@ int main(int argc, char** argv) {
 
     int in_rows = img_in.rows;
     int in_cols = img_in.cols;
-    int out_rows = in_rows / 2;
-    int out_cols = in_cols / 2;
+    int out_rows = 0;
+    int out_cols = 0;
 
     hls::stream<axiData> stream_in("src");
     hls::stream<axiData> stream_out("dst");
+    hls::stream<axiData> stream_out_scaled("dst_scaled");
     xf::cv::cvMat2AXIvideoxf<1, 8>(img_in, stream_in);
 
     // Run function
     std::cout << "Running gauss_resize..." << std::endl;
-    gauss_resize(stream_in, stream_out, in_rows, in_cols);
+    gauss_resize(stream_in, stream_out, stream_out_scaled, in_rows, in_cols, &out_rows, &out_cols);
 
-    cv::Mat img_out(out_rows, out_cols, CV_8UC1);
+    cv::Mat img_out(in_rows, in_cols, CV_8UC1);
+    cv::Mat img_out_scaled(out_rows, out_cols, CV_8UC1);
     xf::cv::AXIvideo2cvMatxf<1, 8>(stream_out, img_out);
-
+    xf::cv::AXIvideo2cvMatxf<1, 8>(stream_out_scaled, img_out_scaled);
 
     // Run opencv
     cv::Mat ref_blurred, ref_out;
-    cv::GaussianBlur(img_in, ref_blurred, cv::Size(5, 5), 1.0);
+    cv::GaussianBlur(img_in, ref_blurred, cv::Size(5, 5), 1.0, 1.0, cv::BORDER_REPLICATE);
     cv::resize(ref_blurred, ref_out, cv::Size(out_cols, out_rows), 0, 0, cv::INTER_LINEAR);
 
-
     // Compare
-    cv::Mat diff;
-    cv::absdiff(ref_out, img_out, diff);
+    cv::Mat diff, diff_scaled;
+    cv::absdiff(ref_blurred, img_out, diff);
+    cv::absdiff(ref_out, img_out_scaled, diff_scaled);
 
     int err_cnt = 0;
     for (int i = 0; i < diff.rows; i++)
@@ -56,12 +60,22 @@ int main(int argc, char** argv) {
             if (diff.at<unsigned char>(i, j) > 2)
                 err_cnt++;
 
-    std::cout << "Nbr of errors: " << err_cnt << std::endl;
-    cv::imwrite("./out_gauss_resize_hls.png", img_out);
+    int err_cnt_scaled = 0;
+    for (int i = 0; i < diff_scaled.rows; i++)
+        for (int j = 0; j < diff_scaled.cols; j++)
+            if (diff_scaled.at<unsigned char>(i, j) > 2)
+                err_cnt_scaled++;
+
+    std::cout << "Nbr of errors (Scale 0): " << err_cnt << std::endl;
+    std::cout << "Nbr of errors (Scale 1): " << err_cnt_scaled << std::endl;
+
+    cv::imwrite("./out_gauss_hls.png", img_out);
+    cv::imwrite("./out_gauss_ref.png", ref_blurred);
+    cv::imwrite("./out_gauss_resize_hls.png", img_out_scaled);
     cv::imwrite("./out_gauss_resize_ref.png", ref_out);
 
     double total_pixels = static_cast<double>(out_rows * out_cols);
-    double success_percentage = ((total_pixels - err_cnt) / total_pixels) * 100.0;
+    double success_percentage = ((total_pixels - err_cnt_scaled) / total_pixels) * 100.0;
 
     if (success_percentage  < 95.0)
         std::cerr << "Test FAILED! " << success_percentage << "%" << std::endl;
