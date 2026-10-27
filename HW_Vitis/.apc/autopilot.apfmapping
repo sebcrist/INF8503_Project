@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
-  <source/>
-  <testbench>
-    <originFiles name="fast_corner_tb.cpp" path="D:\INF8503_Project\HW_Vitis\src\fast_corner_tb.cpp"/>
-  </testbench>
+  <source>
+    <originFiles name="r_brief.cpp" path="D:\INF8503_Project\HW_Vitis\src\r_brief.cpp"/>
+  </source>
+  <testbench/>
 </autopilotfilemapping:AutoPilotFileMapping>
