@@ -10,17 +10,17 @@
 #define MAX_WIDTH  1280
 #define MAT_FIFO_DEPTH 2
 #define USE_NMS 1
-#define FAST_THRESHOLD 20
 
 typedef ap_axiu<8, 1, 1, 1> axiData;
 
-void fast_corner(hls::stream<axiData>& streamIn, hls::stream<axiData>& streamOut, hls::stream<axiData>& cornerMask, int rows, int cols)
+void fast_corner(hls::stream<axiData>& streamIn, hls::stream<axiData>& streamOut, hls::stream<axiData>& cornerMask, int rows, int cols, int fastThreshold)
 {
 #pragma HLS INTERFACE mode=axis register_mode=both port=streamIn register
 #pragma HLS INTERFACE mode=axis register_mode=both port=streamOut register
 #pragma HLS INTERFACE mode=axis register_mode=both port=cornerMask register
 #pragma HLS INTERFACE mode=ap_none port=rows
 #pragma HLS INTERFACE mode=ap_none port=cols
+#pragma HLS INTERFACE mode=ap_none port=fastThreshold
 #pragma HLS INTERFACE mode=ap_ctrl_none port=return
 #pragma HLS DATAFLOW
 
@@ -31,7 +31,7 @@ void fast_corner(hls::stream<axiData>& streamIn, hls::stream<axiData>& streamOut
 
     xf::cv::AXIvideo2xfMat(streamIn, matIn);
     xf::cv::duplicateMat(matIn, matIn1, matIn2);
-    xf::cv::fast<USE_NMS, XF_8UC1, MAX_HEIGHT, MAX_WIDTH, XF_NPPC1, MAT_FIFO_DEPTH, MAT_FIFO_DEPTH>( matIn1, matMask, FAST_THRESHOLD);
+    xf::cv::fast<USE_NMS, XF_8UC1, MAX_HEIGHT, MAX_WIDTH, XF_NPPC1, MAT_FIFO_DEPTH, MAT_FIFO_DEPTH>( matIn1, matMask, fastThreshold);
     xf::cv::xfMat2AXIvideo(matIn2, streamOut);
     xf::cv::xfMat2AXIvideo(matMask, cornerMask);
 }

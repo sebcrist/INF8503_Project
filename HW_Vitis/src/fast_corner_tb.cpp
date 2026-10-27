@@ -7,7 +7,7 @@
 
 typedef ap_axiu<8, 1, 1, 1> axiData;
 
-void fast_corner(hls::stream<axiData>& streamIn, hls::stream<axiData>& streamOut, hls::stream<axiData>& cornerMask, int rows, int cols);
+void fast_corner(hls::stream<axiData>& streamIn, hls::stream<axiData>& streamOut, hls::stream<axiData>& cornerMask, int rows, int cols, int fastThreshold);
 
 int main(int argc, char** argv) {
     if (argc != 2) {
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
     hls::stream<axiData> stream_out_mask("dst_stream_mask");
 
     xf::cv::cvMat2AXIvideoxf<1, 8>(img_in, stream_in);
-    fast_corner(stream_in, stream_out, stream_out_mask, rows, cols);
+    fast_corner(stream_in, stream_out, stream_out_mask, rows, cols, 20);
     xf::cv::AXIvideo2cvMatxf<1, 8>(stream_out, img_out_dup);
     xf::cv::AXIvideo2cvMatxf<1, 8>(stream_out_mask, img_hls_out);
 

@@ -61,6 +61,7 @@ fsm_encoding.os
 tab_*/
 webtalk.*
 vivado_pid*.str
+*.str
 hs_err_pid*
 xelab.*
 xsim.*
