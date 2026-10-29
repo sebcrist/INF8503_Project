@@ -34,4 +34,5 @@ void fast_corner(hls::stream<axiData>& streamIn, hls::stream<axiData>& streamOut
     xf::cv::fast<USE_NMS, XF_8UC1, MAX_HEIGHT, MAX_WIDTH, XF_NPPC1, MAT_FIFO_DEPTH, MAT_FIFO_DEPTH>( matIn1, matMask, fastThreshold);
     xf::cv::xfMat2AXIvideo(matIn2, streamOut);
     xf::cv::xfMat2AXIvideo(matMask, cornerMask);
+    //TODO possible ressource optimization is to fit 8 cornerMask packets which are 8 bits each 255 or 0, into a single 8 bit packet, this might save line buffer ressources later on 
 }

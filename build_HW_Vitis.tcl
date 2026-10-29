@@ -57,10 +57,10 @@ open_solution -reset "solution1" -flow_target vivado
 set_part {xc7z020clg400-1}
 create_clock -period 10 -name default
 
-set TEST_IMAGE "$prj_dir/HW_Vitis/assets/${top_func}.jpg"
-if {![file exists $TEST_IMAGE]} {
-    set TEST_IMAGE "$prj_dir/HW_Vitis/assets/${top_func}.png"
-}
+# MODIFIED LINE
+set test_images [lsort [glob -nocomplain "$prj_dir/HW_Vitis/assets/${top_func}*.png" "$prj_dir/HW_Vitis/assets/${top_func}*.jpg"]]
+# NEW LINE
+set argv_string [join $test_images " "]
 
 set opencv_ldflags "-L$OPENCV_LIB -Wl,--start-group -lopencv_world440 -llibjpeg-turbo -llibpng -llibwebp -llibtiff -llibjasper -lIlmImf -lzlib -lade -llibprotobuf -lquirc -lgdi32 -lole32 -loleaut32 -luuid -lcomdlg32 -Wl,--end-group"
 
@@ -69,11 +69,13 @@ if {$action_choice == 1 || $action_choice == 3 || $action_choice == 4} {
 }
 
 if {$action_choice == 2} {
-    csim_design -ldflags "$opencv_ldflags" -argv "$TEST_IMAGE"
+    # MODIFIED LINE
+    csim_design -ldflags "$opencv_ldflags" -argv "$argv_string"
 }
 
 if {$action_choice == 3} {
-    cosim_design -ldflags "$opencv_ldflags" -argv "$TEST_IMAGE"
+    # MODIFIED LINE
+    cosim_design -ldflags "$opencv_ldflags" -argv "$argv_string"
 }
 
 if {$action_choice == 4} {

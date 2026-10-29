@@ -3,5 +3,7 @@
   <source>
     <originFiles name="r_brief.cpp" path="D:\INF8503_Project\HW_Vitis\src\r_brief.cpp"/>
   </source>
-  <testbench/>
+  <testbench>
+    <originFiles name="r_brief_tb.cpp" path="D:\INF8503_Project\HW_Vitis\src\r_brief_tb.cpp"/>
+  </testbench>
 </autopilotfilemapping:AutoPilotFileMapping>
