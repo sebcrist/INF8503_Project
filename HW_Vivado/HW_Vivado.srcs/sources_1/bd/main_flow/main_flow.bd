@@ -4376,7 +4376,7 @@
                         "value": "64"
                       },
                       "SI_DATA_WIDTH": {
-                        "value": "256"
+                        "value": "512"
                       }
                     },
                     "interface_ports": {
