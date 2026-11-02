@@ -180,9 +180,13 @@ void compute_descriptors(hls::stream<ColEvent>& col_stream,
                 ap_uint<512> combined_data = descriptor; 
 
                 if (ev.is_corner) {
-                    combined_data(271, 256) = wr_col; 
-                    combined_data(287, 272) = r;      
-                    combined_data(511, 288) = 0; // Remplit le reste avec des zéros
+                    // Calculate the true center pixel of the window
+                    ap_uint<16> actual_x = c - RADIUS; 
+                    ap_uint<16> actual_y = r - RADIUS; 
+
+                    combined_data(271, 256) = actual_x; 
+                    combined_data(287, 272) = actual_y;      
+                    combined_data(511, 288) = 0; 
                 } else {
                     combined_data(511, 256) = 0; // Remplit le reste avec des zéros     
                 }
