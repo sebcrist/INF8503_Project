@@ -1,3 +1,5 @@
+#pragma once
+
 #include "ap_int.h"
 #include "ap_axi_sdata.h"
 #include "hls_stream.h"
@@ -6,8 +8,6 @@
 #include "common/xf_video_mem.hpp"
 #include "orb_pattern.h"
 
-const int MAX_ROWS = 720;
-const int MAX_COLS = 1280;
 const int WIN_SZ = 31;
 const int RADIUS = WIN_SZ / 2;
 
@@ -43,13 +43,13 @@ static ap_uint<5> compute_angle_sector(int x, int y) {
     return sector;
 }
 
+template <int ROWS, int COLS, int SCALE_LEVEL>
 void detect_and_queue(hls::stream<axiData>& streamIn, 
                       hls::stream<axiData>& cornerMask, 
-                      hls::stream<ColEvent>& col_stream, 
-                      int rows, int cols) 
+                      hls::stream<ColEvent>& col_stream) 
 {
-    xf::cv::LineBuffer<WIN_SZ, MAX_COLS, pix_t> line_buf;
-    ap_uint<1> mask_ring[32768];
+    xf::cv::LineBuffer<WIN_SZ, COLS, pix_t> line_buf;
+    ap_uint<1> mask_ring[16 * COLS];
 #pragma HLS BIND_STORAGE variable=mask_ring type=ram_s2p impl=bram
 #pragma HLS DEPENDENCE variable=mask_ring inter false
 
@@ -61,15 +61,13 @@ void detect_and_queue(hls::stream<axiData>& streamIn,
     int m00_acc = 0;
     int m01_acc = 0;
     int m10_acc = 0;
-    ap_uint<15> ptr = 0; 
-    ap_uint<15> delay_offset = (ap_uint<15>(cols) << 4) - ap_uint<15>(cols) + RADIUS; 
+    int ptr = 0; 
+    int delay_offset = (COLS << 4) - COLS + RADIUS; 
 
     Row_Loop:
-    for (int r = 0; r < rows; r++) {
-#pragma HLS LOOP_TRIPCOUNT min=1 max=MAX_ROWS
+    for (int r = 0; r < ROWS; r++) {
         Col_Loop:
-        for (int c = 0; c < cols; c++) {
-#pragma HLS LOOP_TRIPCOUNT min=1 max=MAX_COLS
+        for (int c = 0; c < COLS; c++) {
 #pragma HLS PIPELINE II=1
 
             axiData pix_pkt = streamIn.read();
@@ -89,9 +87,16 @@ void detect_and_queue(hls::stream<axiData>& streamIn,
             }
 
             mask_ring[ptr] = in_mask; 
-            ap_uint<15> rd_idx = ptr - delay_offset; 
+            int rd_idx = ptr - delay_offset;
+            if (rd_idx < 0) {
+                rd_idx += (16 * COLS);
+            }
             ap_uint<1> center_mask = mask_ring[rd_idx];
+            
             ptr++;
+            if (ptr == (16 * COLS)) {
+                ptr = 0;
+            }
 
             ap_uint<13> S_in = ev.col[RADIUS]; 
             ap_int<16> m01_in = 0; 
@@ -132,18 +137,16 @@ void detect_and_queue(hls::stream<axiData>& streamIn,
     }
 }
 
+template <int ROWS, int COLS, int SCALE_LEVEL>
 void compute_descriptors(hls::stream<ColEvent>& col_stream, 
-                         hls::stream<axiDescriptor>& streamOut,
-                         int rows, int cols) 
+                         hls::stream<axiDescriptor>& streamOut) 
 {
     pix_t win_buf[WIN_SZ][32]; 
 
     Row_Loop:
-    for (int r = 0; r < rows; r++) {
-#pragma HLS LOOP_TRIPCOUNT min=1 max=MAX_ROWS
+    for (int r = 0; r < ROWS; r++) {
         Col_Loop:
-        for (int c = 0; c < cols; c++) {
-#pragma HLS LOOP_TRIPCOUNT min=1 max=MAX_COLS
+        for (int c = 0; c < COLS; c++) {
             
             ColEvent ev = col_stream.read();
             ap_uint<5> wr_col = c; 
@@ -153,7 +156,7 @@ void compute_descriptors(hls::stream<ColEvent>& col_stream,
                 win_buf[i][wr_col] = ev.col[i]; 
             }
 
-            if (ev.is_corner || (r == rows - 1 && c == cols - 1)) {
+            if (ev.is_corner || (r == ROWS - 1 && c == COLS - 1)) {
                 ap_uint<256> descriptor = 0;
 
                 if (ev.is_corner) {
@@ -161,6 +164,7 @@ void compute_descriptors(hls::stream<ColEvent>& col_stream,
                     Desc_Loop:
                     for (int i = 0; i < 256; i++) {
 #pragma HLS PIPELINE II=1
+#pragma HLS UNROLL factor=2
                         int8_t x1 = ORB_PATTERN[ev.sector][i][0];
                         int8_t y1 = ORB_PATTERN[ev.sector][i][1];
                         int8_t x2 = ORB_PATTERN[ev.sector][i][2];
@@ -180,44 +184,41 @@ void compute_descriptors(hls::stream<ColEvent>& col_stream,
                 ap_uint<512> combined_data = descriptor; 
 
                 if (ev.is_corner) {
-                    // Calculate the true center pixel of the window
-                    ap_uint<16> actual_x = c - RADIUS; 
-                    ap_uint<16> actual_y = r - RADIUS; 
+                    ap_uint<16> actual_x = (c - RADIUS) << SCALE_LEVEL; 
+                    ap_uint<16> actual_y = (r - RADIUS) << SCALE_LEVEL; 
 
                     combined_data(271, 256) = actual_x; 
                     combined_data(287, 272) = actual_y;      
                     combined_data(511, 288) = 0; 
                 } else {
-                    combined_data(511, 256) = 0; // Remplit le reste avec des zéros     
+                    combined_data(511, 256) = 0; 
                 }
 
                 axiDescriptor out_pkt;
                 out_pkt.data = combined_data;
                 out_pkt.keep = -1; 
                 out_pkt.strb = -1;
-                out_pkt.last = (r == rows - 1 && c == cols - 1) ? 1 : 0; 
+                out_pkt.last = (r == ROWS - 1 && c == COLS - 1) ? 1 : 0; 
                 streamOut.write(out_pkt);
             }
         }
     }
 }
 
+template <int ROWS, int COLS, int SCALE_LEVEL>
 void r_brief(hls::stream<axiData>& streamIn, 
              hls::stream<axiData>& cornerMask, 
-             hls::stream<axiDescriptor>& descriptors, 
-             int rows, int cols) 
+             hls::stream<axiDescriptor>& descriptors) 
 {
 #pragma HLS INTERFACE axis port=streamIn
 #pragma HLS INTERFACE axis port=cornerMask
 #pragma HLS INTERFACE axis port=descriptors
-#pragma HLS INTERFACE ap_none port=rows
-#pragma HLS INTERFACE ap_none port=cols
 #pragma HLS INTERFACE ap_ctrl_none port=return
 #pragma HLS DATAFLOW
 
     hls::stream<ColEvent> col_stream;
 #pragma HLS STREAM variable=col_stream depth=512
 
-    detect_and_queue(streamIn, cornerMask, col_stream, rows, cols);
-    compute_descriptors(col_stream, descriptors, rows, cols);
+    detect_and_queue<ROWS, COLS, SCALE_LEVEL>(streamIn, cornerMask, col_stream);
+    compute_descriptors<ROWS, COLS, SCALE_LEVEL>(col_stream, descriptors);
 }

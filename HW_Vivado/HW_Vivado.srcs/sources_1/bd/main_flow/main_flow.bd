@@ -15,12 +15,17 @@
       "v_tpg_0": "",
       "orb_pipeline": {
         "axis_switch_0": "",
-        "gauss_resize_0": "",
         "rgb_to_gray_0": "",
         "axis_broadcaster_0": "",
-        "fast_corner_0": "",
+        "axis_data_fifo_1": "",
         "axis_data_fifo_0": "",
-        "r_brief_0": ""
+        "xlconstant_0": "",
+        "fast_corner_1": "",
+        "fast_corner_0": "",
+        "gauss_resize_0": "",
+        "r_brief_stage0_0": "",
+        "r_brief_stage1_0": "",
+        "descriptor_merger_0": ""
       },
       "hdmi": {
         "v_vid_in_axi4s_0": "",
@@ -289,12 +294,6 @@
               }
             }
           },
-          "gauss_resize_0": {
-            "vlnv": "xilinx.com:hls:gauss_resize:1.0",
-            "xci_name": "main_flow_gauss_resize_0_0",
-            "xci_path": "ip\\main_flow_gauss_resize_0_0\\main_flow_gauss_resize_0_0.xci",
-            "inst_hier_path": "orb_pipeline/gauss_resize_0"
-          },
           "rgb_to_gray_0": {
             "vlnv": "xilinx.com:hls:rgb_to_gray:1.0",
             "xci_name": "main_flow_rgb_to_gray_0_0",
@@ -307,37 +306,80 @@
             "xci_path": "ip\\main_flow_axis_broadcaster_0_0\\main_flow_axis_broadcaster_0_0.xci",
             "inst_hier_path": "orb_pipeline/axis_broadcaster_0"
           },
-          "fast_corner_0": {
-            "vlnv": "xilinx.com:hls:fast_corner:1.0",
-            "xci_name": "main_flow_fast_corner_0_0",
-            "xci_path": "ip\\main_flow_fast_corner_0_0\\main_flow_fast_corner_0_0.xci",
-            "inst_hier_path": "orb_pipeline/fast_corner_0"
-          },
-          "axis_data_fifo_0": {
+          "axis_data_fifo_1": {
             "vlnv": "xilinx.com:ip:axis_data_fifo:2.0",
             "xci_name": "main_flow_axis_data_fifo_0_0",
             "xci_path": "ip\\main_flow_axis_data_fifo_0_0\\main_flow_axis_data_fifo_0_0.xci",
-            "inst_hier_path": "orb_pipeline/axis_data_fifo_0",
+            "inst_hier_path": "orb_pipeline/axis_data_fifo_1",
             "parameters": {
               "FIFO_DEPTH": {
                 "value": "8192"
               }
             }
           },
-          "r_brief_0": {
-            "vlnv": "xilinx.com:hls:r_brief:1.0",
-            "xci_name": "main_flow_r_brief_0_0",
-            "xci_path": "ip\\main_flow_r_brief_0_0\\main_flow_r_brief_0_0.xci",
-            "inst_hier_path": "orb_pipeline/r_brief_0"
+          "axis_data_fifo_0": {
+            "vlnv": "xilinx.com:ip:axis_data_fifo:2.0",
+            "xci_name": "main_flow_axis_data_fifo_0_1",
+            "xci_path": "ip\\main_flow_axis_data_fifo_0_1\\main_flow_axis_data_fifo_0_1.xci",
+            "inst_hier_path": "orb_pipeline/axis_data_fifo_0",
+            "parameters": {
+              "FIFO_DEPTH": {
+                "value": "16384"
+              }
+            }
+          },
+          "xlconstant_0": {
+            "vlnv": "xilinx.com:ip:xlconstant:1.1",
+            "xci_name": "main_flow_xlconstant_0_0",
+            "xci_path": "ip\\main_flow_xlconstant_0_0\\main_flow_xlconstant_0_0.xci",
+            "inst_hier_path": "orb_pipeline/xlconstant_0",
+            "parameters": {
+              "CONST_VAL": {
+                "value": "0"
+              },
+              "CONST_WIDTH": {
+                "value": "32"
+              }
+            }
+          },
+          "fast_corner_1": {
+            "vlnv": "xilinx.com:hls:fast_corner:1.0",
+            "xci_name": "main_flow_fast_corner_0_0",
+            "xci_path": "ip\\main_flow_fast_corner_0_0\\main_flow_fast_corner_0_0.xci",
+            "inst_hier_path": "orb_pipeline/fast_corner_1"
+          },
+          "fast_corner_0": {
+            "vlnv": "xilinx.com:hls:fast_corner:1.0",
+            "xci_name": "main_flow_fast_corner_1_0",
+            "xci_path": "ip\\main_flow_fast_corner_1_0\\main_flow_fast_corner_1_0.xci",
+            "inst_hier_path": "orb_pipeline/fast_corner_0"
+          },
+          "gauss_resize_0": {
+            "vlnv": "xilinx.com:hls:gauss_resize:1.0",
+            "xci_name": "main_flow_gauss_resize_0_0",
+            "xci_path": "ip\\main_flow_gauss_resize_0_0\\main_flow_gauss_resize_0_0.xci",
+            "inst_hier_path": "orb_pipeline/gauss_resize_0"
+          },
+          "r_brief_stage0_0": {
+            "vlnv": "xilinx.com:hls:r_brief_stage0:1.0",
+            "xci_name": "main_flow_r_brief_stage0_0_0",
+            "xci_path": "ip\\main_flow_r_brief_stage0_0_0\\main_flow_r_brief_stage0_0_0.xci",
+            "inst_hier_path": "orb_pipeline/r_brief_stage0_0"
+          },
+          "r_brief_stage1_0": {
+            "vlnv": "xilinx.com:hls:r_brief_stage1:1.0",
+            "xci_name": "main_flow_r_brief_stage1_0_0",
+            "xci_path": "ip\\main_flow_r_brief_stage1_0_0\\main_flow_r_brief_stage1_0_0.xci",
+            "inst_hier_path": "orb_pipeline/r_brief_stage1_0"
+          },
+          "descriptor_merger_0": {
+            "vlnv": "xilinx.com:hls:descriptor_merger:1.0",
+            "xci_name": "main_flow_descriptor_merger_0_0",
+            "xci_path": "ip\\main_flow_descriptor_merger_0_0\\main_flow_descriptor_merger_0_0.xci",
+            "inst_hier_path": "orb_pipeline/descriptor_merger_0"
           }
         },
         "interface_nets": {
-          "Conn1": {
-            "interface_ports": [
-              "descriptors",
-              "r_brief_0/descriptors"
-            ]
-          },
           "axi_vdma_0_M_AXIS_MM2S": {
             "interface_ports": [
               "S02_AXIS",
@@ -359,7 +401,13 @@
           "axis_data_fifo_0_M_AXIS": {
             "interface_ports": [
               "axis_data_fifo_0/M_AXIS",
-              "r_brief_0/streamIn"
+              "r_brief_stage0_0/streamIn"
+            ]
+          },
+          "axis_data_fifo_1_M_AXIS": {
+            "interface_ports": [
+              "axis_data_fifo_1/M_AXIS",
+              "r_brief_stage1_0/streamIn"
             ]
           },
           "axis_switch_0_M00_AXIS": {
@@ -368,28 +416,64 @@
               "axis_broadcaster_0/S_AXIS"
             ]
           },
+          "descriptor_merger_0_stream_out": {
+            "interface_ports": [
+              "descriptors",
+              "descriptor_merger_0/stream_out"
+            ]
+          },
           "fast_corner_0_cornerMask": {
             "interface_ports": [
               "fast_corner_0/cornerMask",
-              "r_brief_0/cornerMask"
+              "r_brief_stage0_0/cornerMask"
             ]
           },
           "fast_corner_0_streamOut": {
+            "interface_ports": [
+              "fast_corner_1/streamOut",
+              "axis_data_fifo_1/S_AXIS"
+            ]
+          },
+          "fast_corner_1_cornerMask": {
+            "interface_ports": [
+              "r_brief_stage1_0/cornerMask",
+              "fast_corner_1/cornerMask"
+            ]
+          },
+          "fast_corner_1_streamOut": {
             "interface_ports": [
               "fast_corner_0/streamOut",
               "axis_data_fifo_0/S_AXIS"
             ]
           },
+          "gauss_resize_0_streamOut": {
+            "interface_ports": [
+              "fast_corner_0/streamIn",
+              "gauss_resize_0/streamOut"
+            ]
+          },
           "gauss_resize_0_streamOutScaledDown": {
             "interface_ports": [
               "gauss_resize_0/streamOutScaledDown",
-              "fast_corner_0/streamIn"
+              "fast_corner_1/streamIn"
             ]
           },
           "ps7_0_axi_periph_M03_AXI": {
             "interface_ports": [
               "S_AXI_CTRL",
               "axis_switch_0/S_AXI_CTRL"
+            ]
+          },
+          "r_brief_stage0_0_descriptors": {
+            "interface_ports": [
+              "r_brief_stage0_0/descriptors",
+              "descriptor_merger_0/stream_stage0"
+            ]
+          },
+          "r_brief_stage1_0_descriptors": {
+            "interface_ports": [
+              "r_brief_stage1_0/descriptors",
+              "descriptor_merger_0/stream_stage1"
             ]
           },
           "rgb_to_gray_0_streamOut": {
@@ -415,35 +499,36 @@
           "axi_gpio_1_gpio2_io_o": {
             "ports": [
               "cols",
-              "gauss_resize_0/cols",
-              "rgb_to_gray_0/cols"
+              "rgb_to_gray_0/cols",
+              "fast_corner_0/cols",
+              "gauss_resize_0/cols"
             ]
           },
           "axi_gpio_1_gpio_io_o": {
             "ports": [
               "rows",
-              "gauss_resize_0/rows",
-              "rgb_to_gray_0/rows"
+              "rgb_to_gray_0/rows",
+              "fast_corner_0/rows",
+              "gauss_resize_0/rows"
             ]
           },
           "fastThreshold_1": {
             "ports": [
               "fastThreshold",
+              "fast_corner_1/fastThreshold",
               "fast_corner_0/fastThreshold"
             ]
           },
           "gauss_resize_0_out_cols": {
             "ports": [
               "gauss_resize_0/colsScaledDown",
-              "fast_corner_0/cols",
-              "r_brief_0/cols"
+              "fast_corner_1/cols"
             ]
           },
           "gauss_resize_0_out_rows": {
             "ports": [
               "gauss_resize_0/rowsScaledDown",
-              "fast_corner_0/rows",
-              "r_brief_0/rows"
+              "fast_corner_1/rows"
             ]
           },
           "processing_system7_0_FCLK_CLK0": {
@@ -451,12 +536,16 @@
               "s_axi_ctrl_aclk",
               "axis_switch_0/s_axi_ctrl_aclk",
               "axis_switch_0/aclk",
-              "gauss_resize_0/ap_clk",
               "rgb_to_gray_0/ap_clk",
               "axis_broadcaster_0/aclk",
-              "fast_corner_0/ap_clk",
+              "axis_data_fifo_1/s_axis_aclk",
               "axis_data_fifo_0/s_axis_aclk",
-              "r_brief_0/ap_clk"
+              "fast_corner_1/ap_clk",
+              "fast_corner_0/ap_clk",
+              "gauss_resize_0/ap_clk",
+              "r_brief_stage0_0/ap_clk",
+              "descriptor_merger_0/ap_clk",
+              "r_brief_stage1_0/ap_clk"
             ]
           },
           "rst_ps7_0_100M_peripheral_aresetn": {
@@ -464,12 +553,16 @@
               "s_axi_ctrl_aresetn",
               "axis_switch_0/s_axi_ctrl_aresetn",
               "axis_switch_0/aresetn",
-              "gauss_resize_0/ap_rst_n",
               "rgb_to_gray_0/ap_rst_n",
               "axis_broadcaster_0/aresetn",
-              "fast_corner_0/ap_rst_n",
+              "axis_data_fifo_1/s_axis_aresetn",
               "axis_data_fifo_0/s_axis_aresetn",
-              "r_brief_0/ap_rst_n"
+              "fast_corner_1/ap_rst_n",
+              "fast_corner_0/ap_rst_n",
+              "gauss_resize_0/ap_rst_n",
+              "r_brief_stage0_0/ap_rst_n",
+              "descriptor_merger_0/ap_rst_n",
+              "r_brief_stage1_0/ap_rst_n"
             ]
           }
         }
@@ -823,7 +916,7 @@
         "inst_hier_path": "xlconcat_0",
         "parameters": {
           "NUM_PORTS": {
-            "value": "3"
+            "value": "4"
           }
         }
       },
@@ -4707,6 +4800,10 @@
           "s2mm_introut": {
             "type": "intr",
             "direction": "O"
+          },
+          "s2mm_introut_0": {
+            "type": "intr",
+            "direction": "O"
           }
         },
         "components": {
@@ -4720,7 +4817,7 @@
                 "value": "0"
               },
               "c_include_s2mm_dre": {
-                "value": "1"
+                "value": "0"
               },
               "c_include_sg": {
                 "value": "0"
@@ -4865,6 +4962,12 @@
           }
         },
         "nets": {
+          "axi_dma_0_s2mm_introut": {
+            "ports": [
+              "axi_dma_0/s2mm_introut",
+              "s2mm_introut_0"
+            ]
+          },
           "axi_vdma_0_mm2s_introut": {
             "ports": [
               "axi_vdma_0/mm2s_introut",
@@ -5080,6 +5183,12 @@
         "ports": [
           "dma_block/s2mm_introut",
           "xlconcat_0/In0"
+        ]
+      },
+      "dma_block_s2mm_introut_0": {
+        "ports": [
+          "dma_block/s2mm_introut_0",
+          "xlconcat_0/In3"
         ]
       },
       "processing_system7_0_FCLK_CLK0": {
