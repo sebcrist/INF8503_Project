@@ -18,16 +18,18 @@ void descriptor_merger(hls::stream<axiDescriptor>& stream_stage0,
 
     axiDescriptor pkt;
 
-    if (stream_stage0.read_nb(pkt)) 
+    if (stream_stage2.read_nb(pkt)) 
     {
-        stream_out.write(pkt);
-    } 
-    else if (stream_stage1.read_nb(pkt)) 
-    {
-        stream_out.write(pkt);
-    } 
-    else if (stream_stage2.read_nb(pkt)) 
-    {
+        pkt.last = 0;
         stream_out.write(pkt);
     }
+    else if (stream_stage1.read_nb(pkt)) 
+    {
+        pkt.last = 0;
+        stream_out.write(pkt);
+    } 
+    else if (stream_stage0.read_nb(pkt)) 
+    {
+        stream_out.write(pkt);
+    } 
 }

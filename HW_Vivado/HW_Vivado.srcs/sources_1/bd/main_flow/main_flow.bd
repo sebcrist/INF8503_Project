@@ -544,8 +544,8 @@
               "fast_corner_0/ap_clk",
               "gauss_resize_0/ap_clk",
               "r_brief_stage0_0/ap_clk",
-              "descriptor_merger_0/ap_clk",
-              "r_brief_stage1_0/ap_clk"
+              "r_brief_stage1_0/ap_clk",
+              "descriptor_merger_0/ap_clk"
             ]
           },
           "rst_ps7_0_100M_peripheral_aresetn": {
@@ -561,8 +561,8 @@
               "fast_corner_0/ap_rst_n",
               "gauss_resize_0/ap_rst_n",
               "r_brief_stage0_0/ap_rst_n",
-              "descriptor_merger_0/ap_rst_n",
-              "r_brief_stage1_0/ap_rst_n"
+              "r_brief_stage1_0/ap_rst_n",
+              "descriptor_merger_0/ap_rst_n"
             ]
           }
         }
