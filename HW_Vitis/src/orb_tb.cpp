@@ -36,7 +36,6 @@ typedef ap_axiu<8, 1, 1, 1> axisOut;
 typedef ap_axiu<8, 1, 1, 1> axiData;
 typedef ap_axiu<512, 1, 1, 1> axiDescriptor;
 
-// Change: Updated fields for Option 1 formulas
 struct ResultRowA {
     int thresh;
     std::string impl;
@@ -47,7 +46,6 @@ struct ResultRowA {
     float match_ref_pct;
 };
 
-// Change: Scene Descs leading, included thresh and Option 1 formula ratios
 struct ResultRowB {
     int scene_descriptors;
     std::string impl;
@@ -218,6 +216,13 @@ void evaluate_matches(const cv::Mat& img1, const std::vector<cv::KeyPoint>& kpts
     }
 }
 
+void draw_all_keypoints(const cv::Mat& img, const std::vector<cv::KeyPoint>& kpts, const std::string& out_filename) {
+    if (img.empty() || kpts.empty() || out_filename.empty()) return;
+    cv::Mat img_with_kpts;
+    cv::drawKeypoints(img, kpts, img_with_kpts, cv::Scalar(0, 0, 255), cv::DrawMatchesFlags::DEFAULT);
+    cv::imwrite(out_filename, img_with_kpts);
+}
+
 float calculate_spatial_overlap(const std::vector<cv::KeyPoint>& kp_hw, const std::vector<cv::KeyPoint>& kp_sw, float tolerance, bool denom_sw = false) {
     if (kp_hw.empty() || kp_sw.empty()) return 0.0f;
     int overlap_count = 0;
@@ -278,7 +283,6 @@ void sw_worker(int th, const cv::Mat& img1, const cv::Mat& img2, const HWResult&
     orb_sw->detectAndCompute(img2, cv::noArray(), kp2_sw, desc2_sw);
     evaluate_matches(img1, kp1_sw, desc1_sw, img2, kp2_sw, desc2_sw, "expA_th" + std::to_string(th) + "_sw.jpg", DEFAULT_HAMMING_THRESH, match_sw);
     
-    // Change: Calculated both match-to-scene and match-to-ref ratios for SW in Exp A
     float m_scene_a = kp1_sw.size() > 0 ? (float)match_sw / kp1_sw.size() * 100.0f : 0.0f;
     float m_ref_a = kp2_sw.size() > 0 ? (float)match_sw / kp2_sw.size() * 100.0f : 0.0f;
     out->rowA_sw = {th, "SW", (int)kp1_sw.size(), (int)kp2_sw.size(), match_sw, m_scene_a, m_ref_a};
@@ -291,12 +295,13 @@ void sw_worker(int th, const cv::Mat& img1, const cv::Mat& img2, const HWResult&
         cv::Mat desc1_swx, desc2_swx; 
         int match_swx, th_swx;
         find_yield_matched_opencv(orb_sw_dyn, img1, img2, target_yield, kp1_swx, desc1_swx, kp2_swx, desc2_swx, th_swx);
-        evaluate_matches(img1, kp1_swx, desc1_swx, img2, kp2_swx, desc2_swx, "expB_tgt" + std::to_string(target_yield) + "_sw.jpg", DEFAULT_HAMMING_THRESH, match_swx);
         
+        evaluate_matches(img1, kp1_swx, desc1_swx, img2, kp2_swx, desc2_swx, "expB_tgt" + std::to_string(target_yield) + "_sw.jpg", DEFAULT_HAMMING_THRESH, match_swx);
+        draw_all_keypoints(img1, kp1_swx, "expB_tgt" + std::to_string(target_yield) + "_kpts_sw.jpg");
+
         float overlap_sc = calculate_spatial_overlap(hw.kp1, kp1_swx, SPATIAL_TOLERANCE_PX, false);
         float overlap_rf = calculate_spatial_overlap(hw.kp2, kp2_swx, SPATIAL_TOLERANCE_PX, true);
         
-        // Change: Calculated both ratios for SW in Exp B
         float m_scene_b = kp1_swx.size() > 0 ? (float)match_swx / kp1_swx.size() * 100.0f : 0.0f;
         float m_ref_b = kp2_swx.size() > 0 ? (float)match_swx / kp2_swx.size() * 100.0f : 0.0f;
 
@@ -314,8 +319,24 @@ void sw_worker(int th, const cv::Mat& img1, const cv::Mat& img2, const HWResult&
 int main(int argc, char** argv) {
     if (argc < 3) return -1;
 
-    cv::Mat img1 = cv::imread(argv[1], cv::IMREAD_COLOR);
-    cv::Mat img2 = cv::imread(argv[2], cv::IMREAD_COLOR);
+    // Change: Parse dynamic arguments to find exactly one reference and one scene image
+    std::string scene_path = "";
+    std::string ref_path = "";
+
+    for (int i = 1; i < argc; i++) {
+        std::string arg = argv[i];
+        if (arg.find("_ref") != std::string::npos) {
+            ref_path = arg;
+        } else if (scene_path.empty()) {
+            scene_path = arg;
+        }
+    }
+
+    if (scene_path.empty() || ref_path.empty()) return -1;
+
+    cv::Mat img1 = cv::imread(scene_path, cv::IMREAD_COLOR);
+    cv::Mat img2 = cv::imread(ref_path, cv::IMREAD_COLOR);
+    
     if (img1.empty() || img2.empty()) return -1;
     
     cv::resize(img1, img1, cv::Size(IMG_WIDTH, IMG_HEIGHT));
@@ -358,7 +379,6 @@ int main(int argc, char** argv) {
     for (size_t i = 0; i < NUM_TESTS; ++i) {
         resultsA.push_back(sw_outputs[i].rowA_sw);
         
-        // Change: Calculated both Option 1 metrics for HW in Exp A
         float hw_m_scene_a = hw_results[i].kp1.size() > 0 ? (float)hw_results[i].matches / hw_results[i].kp1.size() * 100.0f : 0.0f;
         float hw_m_ref_a = hw_results[i].kp2.size() > 0 ? (float)hw_results[i].matches / hw_results[i].kp2.size() * 100.0f : 0.0f;
         resultsA.push_back({hw_results[i].thresh, "HW", (int)hw_results[i].kp1.size(), (int)hw_results[i].kp2.size(), hw_results[i].matches, hw_m_scene_a, hw_m_ref_a});
@@ -367,7 +387,14 @@ int main(int argc, char** argv) {
         if (target_yield > 0) {
             resultsB.push_back(sw_outputs[i].rowB_sw);
             
-            // Change: Calculated both Option 1 metrics for HW in Exp B with Scene Descs leading
+            int temp_hw_matches = 0;
+            evaluate_matches(img1, hw_results[i].kp1, hw_results[i].desc1, 
+                             img2, hw_results[i].kp2, hw_results[i].desc2, 
+                             "expB_tgt" + std::to_string(target_yield) + "_hw.jpg", 
+                             DEFAULT_HAMMING_THRESH, temp_hw_matches);
+            
+            draw_all_keypoints(img1, hw_results[i].kp1, "expB_tgt" + std::to_string(target_yield) + "_kpts_hw.jpg");
+            
             float hw_m_scene_b = hw_results[i].kp1.size() > 0 ? (float)hw_results[i].matches / hw_results[i].kp1.size() * 100.0f : 0.0f;
             float hw_m_ref_b = hw_results[i].kp2.size() > 0 ? (float)hw_results[i].matches / hw_results[i].kp2.size() * 100.0f : 0.0f;
             resultsB.push_back({target_yield, "HW", hw_results[i].thresh, (int)hw_results[i].kp2.size(), hw_results[i].matches, hw_m_scene_b, hw_m_ref_b, -1.0f, -1.0f});
@@ -379,7 +406,6 @@ int main(int argc, char** argv) {
         }
     }
 
-    // Change: Updated Experiment A headers with Option 1 formulas
     std::cout << "\n=====================================================================================================================" << std::endl;
     std::cout << " EXPERIMENT A: FAST THRESHOLD SWEEP" << std::endl;
     std::cout << "=====================================================================================================================" << std::endl;
@@ -398,7 +424,6 @@ int main(int argc, char** argv) {
         if (i % 2 == 1) std::cout << std::string(93, '-') << std::endl;
     }
 
-    // Change: Experiment B formatted with Scene Descs first, Thresh included, and Option 1 headers
     std::cout << "\n=================================================================================================================================================" << std::endl;
     std::cout << " EXPERIMENT B: YIELD-MATCHED SPATIAL COMPARISON" << std::endl;
     std::cout << "=================================================================================================================================================" << std::endl;
@@ -429,7 +454,6 @@ int main(int argc, char** argv) {
         if (i % 2 == 1) std::cout << std::string(145, '-') << std::endl;
     }
     
-    // Change: Experiment C headers using Option 1 match-to-scene metric
     int tgt_yield_c = expC_hw.kp1.size();
     std::cout << "\n===========================================================================" << std::endl;
     std::cout << " EXPERIMENT C: HAMMING DISTANCE SWEEP (Target Yield: " << tgt_yield_c << " features)" << std::endl;
