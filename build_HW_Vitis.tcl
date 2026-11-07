@@ -3,7 +3,6 @@ set prj_dir [pwd]
 set OPENCV_INCLUDE "$prj_dir/External/opencv/include"
 set OPENCV_LIB "$prj_dir/External/opencv/x64/mingw/staticlib"
 
-# Define clock period to calculate time-based latency
 set CLOCK_PERIOD_NS 10
 
 set all_cpp [glob -nocomplain "$prj_dir/HW_Vitis/src/*.cpp"]
@@ -20,13 +19,13 @@ if {[llength $design_files] == 0} {
     exit
 }
 
-puts "\n--- Select Design File ---"
+puts "\n--- Select Design File (Top Function) ---"
 set idx 1
 foreach f $design_files {
     puts "$idx. [file tail $f]"
     incr idx
 }
-puts -nonewline "Enter the number of the file to compile: "
+puts -nonewline "Enter the number of the file to compile (serves as Top Function): "
 flush stdout
 set file_choice [gets stdin]
 set selected_file [lindex $design_files [expr {$file_choice - 1}]]
@@ -40,7 +39,8 @@ puts "2. Run C-Simulation"
 puts "3. Synthesis IP and Run Co-Simulation"
 puts "4. Synthesis IP and Export IP"
 puts "5. View Synthesis History (Skip Compilation)"
-puts -nonewline "Enter your choice (1-5): "
+puts "6. Run Integration Testbench (other_tests - Compiles all design files)"
+puts -nonewline "Enter your choice (1-6): "
 flush stdout
 set action_choice [gets stdin]
 
@@ -113,20 +113,57 @@ if {$action_choice == 5} {
 } else {
     open_project -reset "HW_Vitis"
     set_top $top_func
+    
+    set selected_tb ""
 
-    add_files $selected_file -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -std=c++14"
+    if {$action_choice == 6} {
+        puts "\n--- Select Integration Testbench ---"
+        set tb_files [lsort -unique [glob -nocomplain "$prj_dir/HW_Vitis/other_tests/*.cpp" "$prj_dir/HW_Vitis/src/*_tb.cpp" "$prj_dir/HW_Vitis/src/*TB.cpp"]]
+        if {[llength $tb_files] == 0} {
+            puts "Error: No testbench files found in src/ or other_tests/."
+            exit
+        }
+        set tb_idx 1
+        foreach f $tb_files {
+            puts "$tb_idx. [file tail [file dirname $f]]/[file tail $f]"
+            incr tb_idx
+        }
+        puts -nonewline "Enter the number of the testbench to run: "
+        flush stdout
+        set tb_choice [gets stdin]
+        set selected_tb [lindex $tb_files [expr {$tb_choice - 1}]]
 
-    if {[file exists $tb_file_1]} {
-        add_files -tb $tb_file_1 -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -I$OPENCV_INCLUDE -std=c++14"
-    } elseif {[file exists $tb_file_2]} {
-        add_files -tb $tb_file_2 -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -I$OPENCV_INCLUDE -std=c++14"
+        foreach f $design_files {
+            add_files $f -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -std=c++14"
+        }
+        add_files -tb $selected_tb -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -I$OPENCV_INCLUDE -std=c++14"
+
+    } else {
+        add_files $selected_file -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -std=c++14"
+
+        if {[file exists $tb_file_1]} {
+            add_files -tb $tb_file_1 -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -I$OPENCV_INCLUDE -std=c++14"
+        } elseif {[file exists $tb_file_2]} {
+            add_files -tb $tb_file_2 -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -I$OPENCV_INCLUDE -std=c++14"
+        }
     }
 
     open_solution -reset "solution1" -flow_target vivado
     set_part {xc7z020clg400-1}
     create_clock -period $CLOCK_PERIOD_NS -name default
 
-    set test_images [lsort [glob -nocomplain "$prj_dir/HW_Vitis/assets/${top_func}*.png" "$prj_dir/HW_Vitis/assets/${top_func}*.jpg"]]
+    if {$action_choice == 6} {
+        set tb_name_only [file rootname [file tail $selected_tb]]
+        regsub -nocase {_?tb$} $tb_name_only "" img_prefix
+        
+        set test_images [lsort -unique [glob -nocomplain "$prj_dir/HW_Vitis/assets/${img_prefix}*.png" "$prj_dir/HW_Vitis/assets/${img_prefix}*.jpg"]]
+        
+        if {[llength $test_images] == 0} {
+            puts "Warning: No test images found matching '${img_prefix}*.png/jpg' in assets/"
+        }
+    } else {
+        set test_images [lsort -unique [glob -nocomplain "$prj_dir/HW_Vitis/assets/${top_func}*.png" "$prj_dir/HW_Vitis/assets/${top_func}*.jpg"]]
+    }
     set argv_string [join $test_images " "]
 
     set opencv_ldflags "-L$OPENCV_LIB -Wl,--start-group -lopencv_world440 -llibjpeg-turbo -llibpng -llibwebp -llibtiff -llibjasper -lIlmImf -lzlib -lade -llibprotobuf -lquirc -lgdi32 -lole32 -loleaut32 -luuid -lcomdlg32 -Wl,--end-group"
@@ -178,7 +215,7 @@ if {$action_choice == 5} {
         }
     }
 
-    if {$action_choice == 2} {
+    if {$action_choice == 2 || $action_choice == 6} {
         csim_design -ldflags "$opencv_ldflags" -argv "$argv_string"
     }
 
