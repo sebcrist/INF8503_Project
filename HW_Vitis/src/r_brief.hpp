@@ -141,28 +141,41 @@ template <int ROWS, int COLS, int SCALE_LEVEL>
 void compute_descriptors(hls::stream<ColEvent>& col_stream, 
                          hls::stream<axiDescriptor>& streamOut) 
 {
-    pix_t win_buf[WIN_SZ][32]; 
+    pix_t win_buf1[WIN_SZ][32]; 
+    pix_t win_buf2[WIN_SZ][32]; 
+    
+#pragma HLS ARRAY_PARTITION variable=win_buf1 complete dim=1
+#pragma HLS ARRAY_PARTITION variable=win_buf2 complete dim=1 
 
     Row_Loop:
     for (int r = 0; r < ROWS; r++) {
+#pragma HLS LOOP_TRIPCOUNT min=1 max=720
         Col_Loop:
         for (int c = 0; c < COLS; c++) {
+#pragma HLS LOOP_TRIPCOUNT min=1 max=1280
             
             ColEvent ev = col_stream.read();
             ap_uint<5> wr_col = c; 
             
             for (int i = 0; i < WIN_SZ; i++) {
 #pragma HLS UNROLL
-                win_buf[i][wr_col] = ev.col[i]; 
+                win_buf1[i][wr_col] = ev.col[i]; 
+                win_buf2[i][wr_col] = ev.col[i]; 
             }
 
             if (ev.is_corner || (r == ROWS - 1 && c == COLS - 1)) {
                 ap_uint<256> descriptor = 0;
+                ap_uint<16> actual_x = 0;
+                ap_uint<16> actual_y = 0;
 
                 if (ev.is_corner) {
                     ap_uint<5> center_col = wr_col - RADIUS; 
+                    actual_x = (c - RADIUS) << SCALE_LEVEL; 
+                    actual_y = (r - RADIUS) << SCALE_LEVEL; 
+                    
                     Desc_Loop:
                     for (int i = 0; i < 256; i++) {
+// SACRIFICE: Use more LUTs to process 4 BRIEF tests per clock cycle
 #pragma HLS PIPELINE II=1
 #pragma HLS UNROLL factor=2
                         int8_t x1 = ORB_PATTERN[ev.sector][i][0];
@@ -175,24 +188,14 @@ void compute_descriptors(hls::stream<ColEvent>& col_stream,
                         ap_uint<5> r2 = RADIUS + y2; 
                         ap_uint<5> c2 = center_col + x2; 
 
-                        pix_t p1 = win_buf[r1][c1]; 
-                        pix_t p2 = win_buf[r2][c2]; 
+                        pix_t p1 = win_buf1[r1][c1]; 
+                        pix_t p2 = win_buf2[r2][c2]; 
                         
-                        descriptor = (descriptor >> 1) | (ap_uint<256>(p1 < p2) << 255); 
+                        descriptor[i] = (p1 < p2); 
                     }
                 }
-                ap_uint<512> combined_data = descriptor; 
-
-                if (ev.is_corner) {
-                    ap_uint<16> actual_x = (c - RADIUS) << SCALE_LEVEL; 
-                    ap_uint<16> actual_y = (r - RADIUS) << SCALE_LEVEL; 
-
-                    combined_data(271, 256) = actual_x; 
-                    combined_data(287, 272) = actual_y;      
-                    combined_data(511, 288) = 0; 
-                } else {
-                    combined_data(511, 256) = 0; 
-                }
+                
+                ap_uint<512> combined_data = (ap_uint<224>(0), actual_y, actual_x, descriptor); 
 
                 axiDescriptor out_pkt;
                 out_pkt.data = combined_data;
