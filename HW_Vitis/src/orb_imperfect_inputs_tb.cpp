@@ -21,7 +21,7 @@ constexpr int IMG_HEIGHT = 720;
 constexpr int DUMMY_DESC_COUNT = 5000;
 constexpr int DEFAULT_HAMMING_THRESH = 60;
 constexpr int MAX_FEATURES_OPENCV = 100000;
-constexpr int ORB_LEVELS = 2;
+constexpr int ORB_LEVELS = 8; // OpenCV à plein potentiel
 constexpr float SPATIAL_TOLERANCE_PX = 2.0f; 
 
 constexpr int BS_MAX_ITER = 10;
@@ -52,6 +52,18 @@ struct SWResult {
     int matches;
     float overlap;
 };
+
+// ADDED: Fonction pour combler l'image avec du blanc sans la déformer
+cv::Mat pad_to_exact_size(const cv::Mat& src, int width, int height) {
+    // Crée une image blanche de la taille exacte demandée par le FPGA
+    cv::Mat dst(height, width, src.type(), cv::Scalar(255, 255, 255));
+    // Calcule la portion à copier (évite les débordements si l'image est étrangement plus grande)
+    int copy_width = std::min(src.cols, width);
+    int copy_height = std::min(src.rows, height);
+    // Copie l'image source dans le coin supérieur gauche
+    src(cv::Rect(0, 0, copy_width, copy_height)).copyTo(dst(cv::Rect(0, 0, copy_width, copy_height)));
+    return dst;
+}
 
 void rgb_to_gray(hls::stream<axisIn>& streamIn, hls::stream<axisOut>& streamOut, int rows, int cols);
 void gauss_resize(hls::stream<axiData>& streamIn, hls::stream<axiData>& streamOut, hls::stream<axiData>& streamOutScaledDown, int rows, int cols, int* rowsScaledDown, int* colsScaledDown);
@@ -259,7 +271,6 @@ std::string get_scene_label(const std::string& path) {
     return base;
 }
 
-// Change: Split SW evaluation into a dedicated thread-safe worker
 void sw_scene_worker(const cv::Mat& scene_img, const cv::Mat& ref_img, const HWResult& hw_res, SWResult* sw_res) {
     sw_res->img_name = hw_res.img_name;
     sw_res->thresh = DEFAULT_FALLBACK_THRESH;
@@ -317,12 +328,12 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    // Added: Sort scene paths for deterministic table order
     std::sort(scene_img_paths.begin(), scene_img_paths.end());
 
     cv::Mat ref_img = cv::imread(ref_img_path, cv::IMREAD_COLOR);
     if (ref_img.empty()) return -1;
-    cv::resize(ref_img, ref_img, cv::Size(IMG_WIDTH, IMG_HEIGHT));
+    // CHANGE: On remplit l'image avec du blanc pour atteindre 1280x720 sans déformer l'image
+    ref_img = pad_to_exact_size(ref_img, IMG_WIDTH, IMG_HEIGHT);
 
     std::cout << "\nProcessing Reference Image (HW)..." << std::endl;
     std::vector<cv::KeyPoint> ref_kp_hw; cv::Mat ref_desc_hw;
@@ -334,12 +345,12 @@ int main(int argc, char** argv) {
     std::vector<HWResult> hw_results(num_scenes);
     std::vector<SWResult> sw_results(num_scenes);
 
-    // Change: Run HLS hardware pipeline sequentially across all scenes
     std::cout << "Running hardware pipeline sequentially across " << num_scenes << " imperfect scenes..." << std::endl;
     for (size_t i = 0; i < num_scenes; ++i) {
         scene_imgs[i] = cv::imread(scene_img_paths[i], cv::IMREAD_COLOR);
         if (scene_imgs[i].empty()) return -1;
-        cv::resize(scene_imgs[i], scene_imgs[i], cv::Size(IMG_WIDTH, IMG_HEIGHT));
+        // CHANGE: On remplit l'image de scène avec du blanc ici aussi
+        scene_imgs[i] = pad_to_exact_size(scene_imgs[i], IMG_WIDTH, IMG_HEIGHT);
 
         std::string label = get_scene_label(scene_img_paths[i]);
         hw_results[i].img_name = label;
@@ -348,7 +359,6 @@ int main(int argc, char** argv) {
         draw_all_keypoints(scene_imgs[i], hw_results[i].kp, "imperfect_" + label + "_hw_kpts.jpg");
     }
 
-    // Change: Dispatch OpenCV yield-matching and evaluation to threads
     std::cout << "Dispatching OpenCV yield-matched evaluation to threads..." << std::endl;
     std::vector<std::thread> threads;
     for (size_t i = 0; i < num_scenes; ++i) {
