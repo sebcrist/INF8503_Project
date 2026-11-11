@@ -154,15 +154,18 @@ if {$action_choice == 5} {
 
     if {$action_choice == 6} {
         set tb_name_only [file rootname [file tail $selected_tb]]
-        regsub -nocase {_?tb$} $tb_name_only "" img_prefix
+        regsub -nocase {_?tb(_2|_3|_4|_multi)?$} $tb_name_only "" img_prefix
         
-        set test_images [lsort -unique [glob -nocomplain "$prj_dir/HW_Vitis/assets/${img_prefix}*.png" "$prj_dir/HW_Vitis/assets/${img_prefix}*.jpg"]]
+        set test_images [glob -nocomplain "$prj_dir/HW_Vitis/assets/${img_prefix}*.png" "$prj_dir/HW_Vitis/assets/${img_prefix}*.jpg"]
         
         if {[llength $test_images] == 0} {
-            puts "Warning: No test images found matching '${img_prefix}*.png/jpg' in assets/"
+            puts "Warning: No images found matching '${img_prefix}*.jpg/png' in assets/."
+        } else {
+            puts "Found [llength $test_images] images for testbench: $test_images"
         }
     } else {
-        set test_images [lsort -unique [glob -nocomplain "$prj_dir/HW_Vitis/assets/${top_func}*.png" "$prj_dir/HW_Vitis/assets/${top_func}*.jpg"]]
+        set img_base [glob -nocomplain "$prj_dir/HW_Vitis/assets/${top_func}*.png" "$prj_dir/HW_Vitis/assets/${top_func}*.jpg"]
+        set test_images $img_base
     }
     set argv_string [join $test_images " "]
 
