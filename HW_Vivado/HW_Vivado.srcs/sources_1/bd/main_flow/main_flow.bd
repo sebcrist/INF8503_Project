@@ -15,20 +15,28 @@
       "v_tpg_0": "",
       "orb_pipeline": {
         "axis_switch_0": "",
-        "rgb_to_gray_0": "",
         "axis_broadcaster_0": "",
-        "axis_data_fifo_1": "",
-        "axis_data_fifo_0": "",
-        "fast_corner_1": "",
-        "fast_corner_0": "",
-        "gauss_resize_0": "",
         "descriptor_merger_0": "",
+        "fast_corner_0": "",
+        "fast_corner_1": "",
+        "rgb_to_gray_0": "",
+        "fast_corner_2": "",
+        "axis_data_fifo_0": "",
+        "axis_data_fifo_1": "",
+        "axis_data_fifo_2": "",
+        "gauss_resize_0": "",
+        "gauss_resize_1": "",
         "r_brief_stage0_0": "",
-        "r_brief_stage1_0": ""
+        "r_brief_stage1_0": "",
+        "r_brief_stage2_0": ""
       },
       "hdmi": {
         "v_vid_in_axi4s_0": "",
-        "dvi2rgb_0": ""
+        "dvi2rgb_0": "",
+        "xlslice_blue": "",
+        "xlslice_green": "",
+        "xlslice_red": "",
+        "xlconcat_0": ""
       },
       "axi_gpios": {
         "axi_gpio_0": "",
@@ -293,28 +301,41 @@
               }
             }
           },
-          "rgb_to_gray_0": {
-            "vlnv": "xilinx.com:hls:rgb_to_gray:1.0",
-            "xci_name": "main_flow_rgb_to_gray_0_0",
-            "xci_path": "ip\\main_flow_rgb_to_gray_0_0\\main_flow_rgb_to_gray_0_0.xci",
-            "inst_hier_path": "orb_pipeline/rgb_to_gray_0"
-          },
           "axis_broadcaster_0": {
             "vlnv": "xilinx.com:ip:axis_broadcaster:1.1",
             "xci_name": "main_flow_axis_broadcaster_0_0",
             "xci_path": "ip\\main_flow_axis_broadcaster_0_0\\main_flow_axis_broadcaster_0_0.xci",
             "inst_hier_path": "orb_pipeline/axis_broadcaster_0"
           },
-          "axis_data_fifo_1": {
-            "vlnv": "xilinx.com:ip:axis_data_fifo:2.0",
-            "xci_name": "main_flow_axis_data_fifo_1_0",
-            "xci_path": "ip\\main_flow_axis_data_fifo_1_0\\main_flow_axis_data_fifo_1_0.xci",
-            "inst_hier_path": "orb_pipeline/axis_data_fifo_1",
-            "parameters": {
-              "FIFO_DEPTH": {
-                "value": "8192"
-              }
-            }
+          "descriptor_merger_0": {
+            "vlnv": "xilinx.com:hls:descriptor_merger:1.0",
+            "xci_name": "main_flow_descriptor_merger_0_0",
+            "xci_path": "ip\\main_flow_descriptor_merger_0_0\\main_flow_descriptor_merger_0_0.xci",
+            "inst_hier_path": "orb_pipeline/descriptor_merger_0"
+          },
+          "fast_corner_0": {
+            "vlnv": "xilinx.com:hls:fast_corner:1.0",
+            "xci_name": "main_flow_fast_corner_0_0",
+            "xci_path": "ip\\main_flow_fast_corner_0_0\\main_flow_fast_corner_0_0.xci",
+            "inst_hier_path": "orb_pipeline/fast_corner_0"
+          },
+          "fast_corner_1": {
+            "vlnv": "xilinx.com:hls:fast_corner:1.0",
+            "xci_name": "main_flow_fast_corner_1_0",
+            "xci_path": "ip\\main_flow_fast_corner_1_0\\main_flow_fast_corner_1_0.xci",
+            "inst_hier_path": "orb_pipeline/fast_corner_1"
+          },
+          "rgb_to_gray_0": {
+            "vlnv": "xilinx.com:hls:rgb_to_gray:1.0",
+            "xci_name": "main_flow_rgb_to_gray_0_0",
+            "xci_path": "ip\\main_flow_rgb_to_gray_0_0\\main_flow_rgb_to_gray_0_0.xci",
+            "inst_hier_path": "orb_pipeline/rgb_to_gray_0"
+          },
+          "fast_corner_2": {
+            "vlnv": "xilinx.com:hls:fast_corner:1.0",
+            "xci_name": "main_flow_fast_corner_2_0",
+            "xci_path": "ip\\main_flow_fast_corner_2_0\\main_flow_fast_corner_2_0.xci",
+            "inst_hier_path": "orb_pipeline/fast_corner_2"
           },
           "axis_data_fifo_0": {
             "vlnv": "xilinx.com:ip:axis_data_fifo:2.0",
@@ -323,21 +344,31 @@
             "inst_hier_path": "orb_pipeline/axis_data_fifo_0",
             "parameters": {
               "FIFO_DEPTH": {
-                "value": "16384"
+                "value": "8192"
               }
             }
           },
-          "fast_corner_1": {
-            "vlnv": "xilinx.com:hls:fast_corner:1.0",
-            "xci_name": "main_flow_fast_corner_1_0",
-            "xci_path": "ip\\main_flow_fast_corner_1_0\\main_flow_fast_corner_1_0.xci",
-            "inst_hier_path": "orb_pipeline/fast_corner_1"
+          "axis_data_fifo_1": {
+            "vlnv": "xilinx.com:ip:axis_data_fifo:2.0",
+            "xci_name": "main_flow_axis_data_fifo_0_1",
+            "xci_path": "ip\\main_flow_axis_data_fifo_0_1\\main_flow_axis_data_fifo_0_1.xci",
+            "inst_hier_path": "orb_pipeline/axis_data_fifo_1",
+            "parameters": {
+              "FIFO_DEPTH": {
+                "value": "2048"
+              }
+            }
           },
-          "fast_corner_0": {
-            "vlnv": "xilinx.com:hls:fast_corner:1.0",
-            "xci_name": "main_flow_fast_corner_0_0",
-            "xci_path": "ip\\main_flow_fast_corner_0_0\\main_flow_fast_corner_0_0.xci",
-            "inst_hier_path": "orb_pipeline/fast_corner_0"
+          "axis_data_fifo_2": {
+            "vlnv": "xilinx.com:ip:axis_data_fifo:2.0",
+            "xci_name": "main_flow_axis_data_fifo_1_0",
+            "xci_path": "ip\\main_flow_axis_data_fifo_1_0\\main_flow_axis_data_fifo_1_0.xci",
+            "inst_hier_path": "orb_pipeline/axis_data_fifo_2",
+            "parameters": {
+              "FIFO_DEPTH": {
+                "value": "4096"
+              }
+            }
           },
           "gauss_resize_0": {
             "vlnv": "xilinx.com:hls:gauss_resize:1.0",
@@ -345,11 +376,11 @@
             "xci_path": "ip\\main_flow_gauss_resize_0_0\\main_flow_gauss_resize_0_0.xci",
             "inst_hier_path": "orb_pipeline/gauss_resize_0"
           },
-          "descriptor_merger_0": {
-            "vlnv": "xilinx.com:hls:descriptor_merger:1.0",
-            "xci_name": "main_flow_descriptor_merger_0_0",
-            "xci_path": "ip\\main_flow_descriptor_merger_0_0\\main_flow_descriptor_merger_0_0.xci",
-            "inst_hier_path": "orb_pipeline/descriptor_merger_0"
+          "gauss_resize_1": {
+            "vlnv": "xilinx.com:hls:gauss_resize:1.0",
+            "xci_name": "main_flow_gauss_resize_1_0",
+            "xci_path": "ip\\main_flow_gauss_resize_1_0\\main_flow_gauss_resize_1_0.xci",
+            "inst_hier_path": "orb_pipeline/gauss_resize_1"
           },
           "r_brief_stage0_0": {
             "vlnv": "xilinx.com:hls:r_brief_stage0:1.0",
@@ -362,6 +393,12 @@
             "xci_name": "main_flow_r_brief_stage1_0_0",
             "xci_path": "ip\\main_flow_r_brief_stage1_0_0\\main_flow_r_brief_stage1_0_0.xci",
             "inst_hier_path": "orb_pipeline/r_brief_stage1_0"
+          },
+          "r_brief_stage2_0": {
+            "vlnv": "xilinx.com:hls:r_brief_stage2:1.0",
+            "xci_name": "main_flow_r_brief_stage2_0_0",
+            "xci_path": "ip\\main_flow_r_brief_stage2_0_0\\main_flow_r_brief_stage2_0_0.xci",
+            "inst_hier_path": "orb_pipeline/r_brief_stage2_0"
           }
         },
         "interface_nets": {
@@ -392,6 +429,12 @@
           "axis_data_fifo_1_M_AXIS": {
             "interface_ports": [
               "axis_data_fifo_1/M_AXIS",
+              "r_brief_stage2_0/streamIn"
+            ]
+          },
+          "axis_data_fifo_2_M_AXIS": {
+            "interface_ports": [
+              "axis_data_fifo_2/M_AXIS",
               "r_brief_stage1_0/streamIn"
             ]
           },
@@ -415,8 +458,8 @@
           },
           "fast_corner_0_streamOut": {
             "interface_ports": [
-              "fast_corner_1/streamOut",
-              "axis_data_fifo_1/S_AXIS"
+              "axis_data_fifo_0/S_AXIS",
+              "fast_corner_0/streamOut"
             ]
           },
           "fast_corner_1_cornerMask": {
@@ -427,8 +470,20 @@
           },
           "fast_corner_1_streamOut": {
             "interface_ports": [
-              "fast_corner_0/streamOut",
-              "axis_data_fifo_0/S_AXIS"
+              "fast_corner_1/streamOut",
+              "axis_data_fifo_2/S_AXIS"
+            ]
+          },
+          "fast_corner_2_cornerMask": {
+            "interface_ports": [
+              "fast_corner_2/cornerMask",
+              "r_brief_stage2_0/cornerMask"
+            ]
+          },
+          "fast_corner_2_streamOut": {
+            "interface_ports": [
+              "fast_corner_2/streamOut",
+              "axis_data_fifo_1/S_AXIS"
             ]
           },
           "gauss_resize_0_streamOut": {
@@ -440,7 +495,19 @@
           "gauss_resize_0_streamOutScaledDown": {
             "interface_ports": [
               "gauss_resize_0/streamOutScaledDown",
+              "gauss_resize_1/streamIn"
+            ]
+          },
+          "gauss_resize_1_streamOut": {
+            "interface_ports": [
+              "gauss_resize_1/streamOut",
               "fast_corner_1/streamIn"
+            ]
+          },
+          "gauss_resize_1_streamOutScaledDown": {
+            "interface_ports": [
+              "fast_corner_2/streamIn",
+              "gauss_resize_1/streamOutScaledDown"
             ]
           },
           "ps7_0_axi_periph_M03_AXI": {
@@ -459,6 +526,12 @@
             "interface_ports": [
               "r_brief_stage1_0/descriptors",
               "descriptor_merger_0/stream_stage1"
+            ]
+          },
+          "r_brief_stage2_0_descriptors": {
+            "interface_ports": [
+              "r_brief_stage2_0/descriptors",
+              "descriptor_merger_0/stream_stage2"
             ]
           },
           "rgb_to_gray_0_streamOut": {
@@ -484,36 +557,51 @@
           "axi_gpio_1_gpio2_io_o": {
             "ports": [
               "cols",
-              "rgb_to_gray_0/cols",
               "fast_corner_0/cols",
+              "rgb_to_gray_0/cols",
               "gauss_resize_0/cols"
             ]
           },
           "axi_gpio_1_gpio_io_o": {
             "ports": [
               "rows",
-              "rgb_to_gray_0/rows",
               "fast_corner_0/rows",
+              "rgb_to_gray_0/rows",
               "gauss_resize_0/rows"
             ]
           },
           "fastThreshold_1": {
             "ports": [
               "fastThreshold",
+              "fast_corner_0/fastThreshold",
               "fast_corner_1/fastThreshold",
-              "fast_corner_0/fastThreshold"
+              "fast_corner_2/fastThreshold"
             ]
           },
           "gauss_resize_0_out_cols": {
             "ports": [
               "gauss_resize_0/colsScaledDown",
-              "fast_corner_1/cols"
+              "fast_corner_1/cols",
+              "gauss_resize_1/cols"
             ]
           },
           "gauss_resize_0_out_rows": {
             "ports": [
               "gauss_resize_0/rowsScaledDown",
-              "fast_corner_1/rows"
+              "fast_corner_1/rows",
+              "gauss_resize_1/rows"
+            ]
+          },
+          "gauss_resize_1_colsScaledDown": {
+            "ports": [
+              "gauss_resize_1/colsScaledDown",
+              "fast_corner_2/cols"
+            ]
+          },
+          "gauss_resize_1_rowsScaledDown": {
+            "ports": [
+              "gauss_resize_1/rowsScaledDown",
+              "fast_corner_2/rows"
             ]
           },
           "processing_system7_0_FCLK_CLK0": {
@@ -521,16 +609,20 @@
               "s_axi_ctrl_aclk",
               "axis_switch_0/s_axi_ctrl_aclk",
               "axis_switch_0/aclk",
-              "rgb_to_gray_0/ap_clk",
               "axis_broadcaster_0/aclk",
-              "axis_data_fifo_1/s_axis_aclk",
-              "axis_data_fifo_0/s_axis_aclk",
-              "fast_corner_1/ap_clk",
-              "fast_corner_0/ap_clk",
-              "gauss_resize_0/ap_clk",
               "descriptor_merger_0/ap_clk",
+              "fast_corner_0/ap_clk",
+              "fast_corner_1/ap_clk",
+              "rgb_to_gray_0/ap_clk",
+              "fast_corner_2/ap_clk",
+              "axis_data_fifo_0/s_axis_aclk",
+              "axis_data_fifo_1/s_axis_aclk",
+              "axis_data_fifo_2/s_axis_aclk",
+              "gauss_resize_0/ap_clk",
+              "gauss_resize_1/ap_clk",
               "r_brief_stage0_0/ap_clk",
-              "r_brief_stage1_0/ap_clk"
+              "r_brief_stage1_0/ap_clk",
+              "r_brief_stage2_0/ap_clk"
             ]
           },
           "rst_ps7_0_100M_peripheral_aresetn": {
@@ -538,16 +630,20 @@
               "s_axi_ctrl_aresetn",
               "axis_switch_0/s_axi_ctrl_aresetn",
               "axis_switch_0/aresetn",
-              "rgb_to_gray_0/ap_rst_n",
               "axis_broadcaster_0/aresetn",
-              "axis_data_fifo_1/s_axis_aresetn",
-              "axis_data_fifo_0/s_axis_aresetn",
-              "fast_corner_1/ap_rst_n",
-              "fast_corner_0/ap_rst_n",
-              "gauss_resize_0/ap_rst_n",
               "descriptor_merger_0/ap_rst_n",
+              "fast_corner_0/ap_rst_n",
+              "fast_corner_1/ap_rst_n",
+              "rgb_to_gray_0/ap_rst_n",
+              "fast_corner_2/ap_rst_n",
+              "axis_data_fifo_0/s_axis_aresetn",
+              "axis_data_fifo_1/s_axis_aresetn",
+              "axis_data_fifo_2/s_axis_aresetn",
+              "gauss_resize_0/ap_rst_n",
+              "gauss_resize_1/ap_rst_n",
               "r_brief_stage0_0/ap_rst_n",
-              "r_brief_stage1_0/ap_rst_n"
+              "r_brief_stage1_0/ap_rst_n",
+              "r_brief_stage2_0/ap_rst_n"
             ]
           }
         }
@@ -613,6 +709,77 @@
                 "value": "false"
               }
             }
+          },
+          "xlslice_blue": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "main_flow_xlslice_0_0",
+            "xci_path": "ip\\main_flow_xlslice_0_0\\main_flow_xlslice_0_0.xci",
+            "inst_hier_path": "hdmi/xlslice_blue",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "23"
+              },
+              "DIN_TO": {
+                "value": "16"
+              },
+              "DIN_WIDTH": {
+                "value": "24"
+              },
+              "DOUT_WIDTH": {
+                "value": "8"
+              }
+            }
+          },
+          "xlslice_green": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "main_flow_xlslice_0_1",
+            "xci_path": "ip\\main_flow_xlslice_0_1\\main_flow_xlslice_0_1.xci",
+            "inst_hier_path": "hdmi/xlslice_green",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "7"
+              },
+              "DIN_TO": {
+                "value": "0"
+              },
+              "DIN_WIDTH": {
+                "value": "24"
+              },
+              "DOUT_WIDTH": {
+                "value": "8"
+              }
+            }
+          },
+          "xlslice_red": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "main_flow_xlslice_0_2",
+            "xci_path": "ip\\main_flow_xlslice_0_2\\main_flow_xlslice_0_2.xci",
+            "inst_hier_path": "hdmi/xlslice_red",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "15"
+              },
+              "DIN_TO": {
+                "value": "8"
+              },
+              "DIN_WIDTH": {
+                "value": "24"
+              },
+              "DOUT_WIDTH": {
+                "value": "8"
+              }
+            }
+          },
+          "xlconcat_0": {
+            "vlnv": "xilinx.com:ip:xlconcat:2.1",
+            "xci_name": "main_flow_xlconcat_0_1",
+            "xci_path": "ip\\main_flow_xlconcat_0_1\\main_flow_xlconcat_0_1.xci",
+            "inst_hier_path": "hdmi/xlconcat_0",
+            "parameters": {
+              "NUM_PORTS": {
+                "value": "3"
+              }
+            }
           }
         },
         "interface_nets": {
@@ -645,7 +812,9 @@
           "dvi2rgb_0_vid_pData": {
             "ports": [
               "dvi2rgb_0/vid_pData",
-              "v_vid_in_axi4s_0/vid_data"
+              "xlslice_blue/Din",
+              "xlslice_green/Din",
+              "xlslice_red/Din"
             ]
           },
           "dvi2rgb_0_vid_pHSync": {
@@ -685,12 +854,36 @@
               "dvi2rgb_0/aRst_n"
             ]
           },
+          "xlconcat_0_dout": {
+            "ports": [
+              "xlconcat_0/dout",
+              "v_vid_in_axi4s_0/vid_data"
+            ]
+          },
           "xlconstant_0_dout": {
             "ports": [
               "hdmi_in_hpd",
               "v_vid_in_axi4s_0/aclken",
               "v_vid_in_axi4s_0/axis_enable",
               "v_vid_in_axi4s_0/vid_io_in_ce"
+            ]
+          },
+          "xlslice_blue_Dout": {
+            "ports": [
+              "xlslice_red/Dout",
+              "xlconcat_0/In0"
+            ]
+          },
+          "xlslice_green_Dout": {
+            "ports": [
+              "xlslice_green/Dout",
+              "xlconcat_0/In1"
+            ]
+          },
+          "xlslice_red_Dout": {
+            "ports": [
+              "xlslice_blue/Dout",
+              "xlconcat_0/In2"
             ]
           }
         }
@@ -2206,6 +2399,12 @@
           },
           "PCW_S_AXI_HP1_ID_WIDTH": {
             "value": "6"
+          },
+          "PCW_S_AXI_HP2_DATA_WIDTH": {
+            "value": "64"
+          },
+          "PCW_S_AXI_HP3_DATA_WIDTH": {
+            "value": "64"
           },
           "PCW_TPIU_PERIPHERAL_CLKSRC": {
             "value": "External"

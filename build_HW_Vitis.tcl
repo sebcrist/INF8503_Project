@@ -20,18 +20,21 @@ if {[llength $design_files] == 0} {
 }
 
 puts "\n--- Select Design File (Top Function) ---"
+puts "0. All IPs (Batch Process)"
 set idx 1
 foreach f $design_files {
     puts "$idx. [file tail $f]"
     incr idx
 }
-puts -nonewline "Enter the number of the file to compile (serves as Top Function): "
+puts -nonewline "Enter the number of the file to compile (0 for All, serves as Top Function): "
 flush stdout
 set file_choice [gets stdin]
-set selected_file [lindex $design_files [expr {$file_choice - 1}]]
-set top_func [file rootname [file tail $selected_file]]
-set tb_file_1 "$prj_dir/HW_Vitis/src/${top_func}_tb.cpp"
-set tb_file_2 "$prj_dir/HW_Vitis/src/${top_func}TB.cpp"
+
+if {$file_choice == 0} {
+    set target_files $design_files
+} else {
+    set target_files [list [lindex $design_files [expr {$file_choice - 1}]]]
+}
 
 puts "\n--- Select Action ---"
 puts "1. Synthesis IP"
@@ -43,6 +46,25 @@ puts "6. Run Integration Testbench (other_tests - Compiles all design files)"
 puts -nonewline "Enter your choice (1-6): "
 flush stdout
 set action_choice [gets stdin]
+
+set selected_tb ""
+if {$action_choice == 6} {
+    puts "\n--- Select Integration Testbench ---"
+    set tb_files [lsort -unique [glob -nocomplain "$prj_dir/HW_Vitis/other_tests/*.cpp" "$prj_dir/HW_Vitis/src/*_tb.cpp" "$prj_dir/HW_Vitis/src/*TB.cpp"]]
+    if {[llength $tb_files] == 0} {
+        puts "Error: No testbench files found in src/ or other_tests/."
+        exit
+    }
+    set tb_idx 1
+    foreach f $tb_files {
+        puts "$tb_idx. [file tail [file dirname $f]]/[file tail $f]"
+        incr tb_idx
+    }
+    puts -nonewline "Enter the number of the testbench to run: "
+    flush stdout
+    set tb_choice [gets stdin]
+    set selected_tb [lindex $tb_files [expr {$tb_choice - 1}]]
+}
 
 proc format_time {cycles clock_period} {
     if {$cycles eq "N/A" || $cycles eq "" || ![string is wideinteger $cycles]} { return $cycles }
@@ -106,40 +128,31 @@ proc print_synthesis_history {log_file top_func clock_period} {
     puts "==========================================================================================================================\n"
 }
 
-set log_file "$prj_dir/HW_Vitis/logs/${top_func}_summary.csv"
+foreach current_file $target_files {
+    set top_func [file rootname [file tail $current_file]]
+    set tb_file_1 "$prj_dir/HW_Vitis/src/${top_func}_tb.cpp"
+    set tb_file_2 "$prj_dir/HW_Vitis/src/${top_func}TB.cpp"
+    set log_file "$prj_dir/HW_Vitis/logs/${top_func}_summary.csv"
 
-if {$action_choice == 5} {
-    print_synthesis_history $log_file $top_func $CLOCK_PERIOD_NS
-} else {
+    puts "\n=========================================================================================="
+    puts " PROCESSING TOP FUNCTION: $top_func"
+    puts "==========================================================================================\n"
+
+    if {$action_choice == 5} {
+        print_synthesis_history $log_file $top_func $CLOCK_PERIOD_NS
+        continue
+    }
+
     open_project -reset "HW_Vitis"
     set_top $top_func
     
-    set selected_tb ""
-
     if {$action_choice == 6} {
-        puts "\n--- Select Integration Testbench ---"
-        set tb_files [lsort -unique [glob -nocomplain "$prj_dir/HW_Vitis/other_tests/*.cpp" "$prj_dir/HW_Vitis/src/*_tb.cpp" "$prj_dir/HW_Vitis/src/*TB.cpp"]]
-        if {[llength $tb_files] == 0} {
-            puts "Error: No testbench files found in src/ or other_tests/."
-            exit
-        }
-        set tb_idx 1
-        foreach f $tb_files {
-            puts "$tb_idx. [file tail [file dirname $f]]/[file tail $f]"
-            incr tb_idx
-        }
-        puts -nonewline "Enter the number of the testbench to run: "
-        flush stdout
-        set tb_choice [gets stdin]
-        set selected_tb [lindex $tb_files [expr {$tb_choice - 1}]]
-
         foreach f $design_files {
             add_files $f -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -std=c++14"
         }
         add_files -tb $selected_tb -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -I$OPENCV_INCLUDE -std=c++14"
-
     } else {
-        add_files $selected_file -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -std=c++14"
+        add_files $current_file -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -std=c++14"
 
         if {[file exists $tb_file_1]} {
             add_files -tb $tb_file_1 -cflags "-I$prj_dir/External/Vitis_Libraries/vision/L1/include -I$OPENCV_INCLUDE -std=c++14"
@@ -238,7 +251,9 @@ if {$action_choice == 5} {
         }
         puts "SUCCESS: IP exported to: $target_ip_dir\n"
     }
+}
 
+if {$action_choice != 5} {
     puts "\nProject setup and actions complete. Opening Vitis HLS GUI..."
     open_project "HW_Vitis"
 }
