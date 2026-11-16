@@ -134,6 +134,7 @@ xilinx.com:ip:axi_dma:7.1\
 xilinx.com:ip:axi_vdma:6.3\
 digilentinc.com:ip:dvi2rgb:2.0\
 xilinx.com:ip:v_vid_in_axi4s:5.0\
+xilinx.com:ip:xlslice:1.0\
 xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:axis_broadcaster:1.1\
 xilinx.com:ip:axis_data_fifo:2.0\
@@ -143,6 +144,7 @@ xilinx.com:hls:fast_corner:1.0\
 xilinx.com:hls:gauss_resize:1.0\
 xilinx.com:hls:r_brief_stage0:1.0\
 xilinx.com:hls:r_brief_stage1:1.0\
+xilinx.com:hls:r_brief_stage2:1.0\
 xilinx.com:hls:rgb_to_gray:1.0\
 "
 
@@ -234,14 +236,20 @@ proc create_hier_cell_orb_pipeline { parentCell nameHier } {
   # Create instance: axis_data_fifo_0, and set properties
   set axis_data_fifo_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_0 ]
   set_property -dict [ list \
-   CONFIG.FIFO_DEPTH {16384} \
+   CONFIG.FIFO_DEPTH {8192} \
  ] $axis_data_fifo_0
 
   # Create instance: axis_data_fifo_1, and set properties
   set axis_data_fifo_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_1 ]
   set_property -dict [ list \
-   CONFIG.FIFO_DEPTH {8192} \
+   CONFIG.FIFO_DEPTH {2048} \
  ] $axis_data_fifo_1
+
+  # Create instance: axis_data_fifo_2, and set properties
+  set axis_data_fifo_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:2.0 axis_data_fifo_2 ]
+  set_property -dict [ list \
+   CONFIG.FIFO_DEPTH {4096} \
+ ] $axis_data_fifo_2
 
   # Create instance: axis_switch_0, and set properties
   set axis_switch_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_switch:1.1 axis_switch_0 ]
@@ -259,14 +267,23 @@ proc create_hier_cell_orb_pipeline { parentCell nameHier } {
   # Create instance: fast_corner_1, and set properties
   set fast_corner_1 [ create_bd_cell -type ip -vlnv xilinx.com:hls:fast_corner:1.0 fast_corner_1 ]
 
+  # Create instance: fast_corner_2, and set properties
+  set fast_corner_2 [ create_bd_cell -type ip -vlnv xilinx.com:hls:fast_corner:1.0 fast_corner_2 ]
+
   # Create instance: gauss_resize_0, and set properties
   set gauss_resize_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:gauss_resize:1.0 gauss_resize_0 ]
+
+  # Create instance: gauss_resize_1, and set properties
+  set gauss_resize_1 [ create_bd_cell -type ip -vlnv xilinx.com:hls:gauss_resize:1.0 gauss_resize_1 ]
 
   # Create instance: r_brief_stage0_0, and set properties
   set r_brief_stage0_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:r_brief_stage0:1.0 r_brief_stage0_0 ]
 
   # Create instance: r_brief_stage1_0, and set properties
   set r_brief_stage1_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:r_brief_stage1:1.0 r_brief_stage1_0 ]
+
+  # Create instance: r_brief_stage2_0, and set properties
+  set r_brief_stage2_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:r_brief_stage2:1.0 r_brief_stage2_0 ]
 
   # Create instance: rgb_to_gray_0, and set properties
   set rgb_to_gray_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:rgb_to_gray:1.0 rgb_to_gray_0 ]
@@ -276,18 +293,24 @@ proc create_hier_cell_orb_pipeline { parentCell nameHier } {
   connect_bd_intf_net -intf_net axis_broadcaster_0_M00_AXIS [get_bd_intf_pins axis_broadcaster_0/M00_AXIS] [get_bd_intf_pins rgb_to_gray_0/streamIn]
   connect_bd_intf_net -intf_net axis_broadcaster_0_M01_AXIS [get_bd_intf_pins streamOut] [get_bd_intf_pins axis_broadcaster_0/M01_AXIS]
   connect_bd_intf_net -intf_net axis_data_fifo_0_M_AXIS [get_bd_intf_pins axis_data_fifo_0/M_AXIS] [get_bd_intf_pins r_brief_stage0_0/streamIn]
-  connect_bd_intf_net -intf_net axis_data_fifo_1_M_AXIS [get_bd_intf_pins axis_data_fifo_1/M_AXIS] [get_bd_intf_pins r_brief_stage1_0/streamIn]
+  connect_bd_intf_net -intf_net axis_data_fifo_1_M_AXIS [get_bd_intf_pins axis_data_fifo_1/M_AXIS] [get_bd_intf_pins r_brief_stage2_0/streamIn]
+  connect_bd_intf_net -intf_net axis_data_fifo_2_M_AXIS [get_bd_intf_pins axis_data_fifo_2/M_AXIS] [get_bd_intf_pins r_brief_stage1_0/streamIn]
   connect_bd_intf_net -intf_net axis_switch_0_M00_AXIS [get_bd_intf_pins axis_broadcaster_0/S_AXIS] [get_bd_intf_pins axis_switch_0/M00_AXIS]
   connect_bd_intf_net -intf_net descriptor_merger_0_stream_out [get_bd_intf_pins descriptors] [get_bd_intf_pins descriptor_merger_0/stream_out]
   connect_bd_intf_net -intf_net fast_corner_0_cornerMask [get_bd_intf_pins fast_corner_0/cornerMask] [get_bd_intf_pins r_brief_stage0_0/cornerMask]
-  connect_bd_intf_net -intf_net fast_corner_0_streamOut [get_bd_intf_pins axis_data_fifo_1/S_AXIS] [get_bd_intf_pins fast_corner_1/streamOut]
+  connect_bd_intf_net -intf_net fast_corner_0_streamOut [get_bd_intf_pins axis_data_fifo_0/S_AXIS] [get_bd_intf_pins fast_corner_0/streamOut]
   connect_bd_intf_net -intf_net fast_corner_1_cornerMask [get_bd_intf_pins fast_corner_1/cornerMask] [get_bd_intf_pins r_brief_stage1_0/cornerMask]
-  connect_bd_intf_net -intf_net fast_corner_1_streamOut [get_bd_intf_pins axis_data_fifo_0/S_AXIS] [get_bd_intf_pins fast_corner_0/streamOut]
+  connect_bd_intf_net -intf_net fast_corner_1_streamOut [get_bd_intf_pins axis_data_fifo_2/S_AXIS] [get_bd_intf_pins fast_corner_1/streamOut]
+  connect_bd_intf_net -intf_net fast_corner_2_cornerMask [get_bd_intf_pins fast_corner_2/cornerMask] [get_bd_intf_pins r_brief_stage2_0/cornerMask]
+  connect_bd_intf_net -intf_net fast_corner_2_streamOut [get_bd_intf_pins axis_data_fifo_1/S_AXIS] [get_bd_intf_pins fast_corner_2/streamOut]
   connect_bd_intf_net -intf_net gauss_resize_0_streamOut [get_bd_intf_pins fast_corner_0/streamIn] [get_bd_intf_pins gauss_resize_0/streamOut]
-  connect_bd_intf_net -intf_net gauss_resize_0_streamOutScaledDown [get_bd_intf_pins fast_corner_1/streamIn] [get_bd_intf_pins gauss_resize_0/streamOutScaledDown]
+  connect_bd_intf_net -intf_net gauss_resize_0_streamOutScaledDown [get_bd_intf_pins gauss_resize_0/streamOutScaledDown] [get_bd_intf_pins gauss_resize_1/streamIn]
+  connect_bd_intf_net -intf_net gauss_resize_1_streamOut [get_bd_intf_pins fast_corner_1/streamIn] [get_bd_intf_pins gauss_resize_1/streamOut]
+  connect_bd_intf_net -intf_net gauss_resize_1_streamOutScaledDown [get_bd_intf_pins fast_corner_2/streamIn] [get_bd_intf_pins gauss_resize_1/streamOutScaledDown]
   connect_bd_intf_net -intf_net ps7_0_axi_periph_M03_AXI [get_bd_intf_pins S_AXI_CTRL] [get_bd_intf_pins axis_switch_0/S_AXI_CTRL]
   connect_bd_intf_net -intf_net r_brief_stage0_0_descriptors [get_bd_intf_pins descriptor_merger_0/stream_stage0] [get_bd_intf_pins r_brief_stage0_0/descriptors]
   connect_bd_intf_net -intf_net r_brief_stage1_0_descriptors [get_bd_intf_pins descriptor_merger_0/stream_stage1] [get_bd_intf_pins r_brief_stage1_0/descriptors]
+  connect_bd_intf_net -intf_net r_brief_stage2_0_descriptors [get_bd_intf_pins descriptor_merger_0/stream_stage2] [get_bd_intf_pins r_brief_stage2_0/descriptors]
   connect_bd_intf_net -intf_net rgb_to_gray_0_streamOut [get_bd_intf_pins gauss_resize_0/streamIn] [get_bd_intf_pins rgb_to_gray_0/streamOut]
   connect_bd_intf_net -intf_net v_tpg_0_m_axis_video [get_bd_intf_pins S01_AXIS] [get_bd_intf_pins axis_switch_0/S01_AXIS]
   connect_bd_intf_net -intf_net v_vid_in_axi4s_0_video_out [get_bd_intf_pins S00_AXIS] [get_bd_intf_pins axis_switch_0/S00_AXIS]
@@ -295,11 +318,13 @@ proc create_hier_cell_orb_pipeline { parentCell nameHier } {
   # Create port connections
   connect_bd_net -net axi_gpio_1_gpio2_io_o [get_bd_pins cols] [get_bd_pins fast_corner_0/cols] [get_bd_pins gauss_resize_0/cols] [get_bd_pins rgb_to_gray_0/cols]
   connect_bd_net -net axi_gpio_1_gpio_io_o [get_bd_pins rows] [get_bd_pins fast_corner_0/rows] [get_bd_pins gauss_resize_0/rows] [get_bd_pins rgb_to_gray_0/rows]
-  connect_bd_net -net fastThreshold_1 [get_bd_pins fastThreshold] [get_bd_pins fast_corner_0/fastThreshold] [get_bd_pins fast_corner_1/fastThreshold]
-  connect_bd_net -net gauss_resize_0_out_cols [get_bd_pins fast_corner_1/cols] [get_bd_pins gauss_resize_0/colsScaledDown]
-  connect_bd_net -net gauss_resize_0_out_rows [get_bd_pins fast_corner_1/rows] [get_bd_pins gauss_resize_0/rowsScaledDown]
-  connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins s_axi_ctrl_aclk] [get_bd_pins axis_broadcaster_0/aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_1/s_axis_aclk] [get_bd_pins axis_switch_0/aclk] [get_bd_pins axis_switch_0/s_axi_ctrl_aclk] [get_bd_pins descriptor_merger_0/ap_clk] [get_bd_pins fast_corner_0/ap_clk] [get_bd_pins fast_corner_1/ap_clk] [get_bd_pins gauss_resize_0/ap_clk] [get_bd_pins r_brief_stage0_0/ap_clk] [get_bd_pins r_brief_stage1_0/ap_clk] [get_bd_pins rgb_to_gray_0/ap_clk]
-  connect_bd_net -net rst_ps7_0_100M_peripheral_aresetn [get_bd_pins s_axi_ctrl_aresetn] [get_bd_pins axis_broadcaster_0/aresetn] [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins axis_data_fifo_1/s_axis_aresetn] [get_bd_pins axis_switch_0/aresetn] [get_bd_pins axis_switch_0/s_axi_ctrl_aresetn] [get_bd_pins descriptor_merger_0/ap_rst_n] [get_bd_pins fast_corner_0/ap_rst_n] [get_bd_pins fast_corner_1/ap_rst_n] [get_bd_pins gauss_resize_0/ap_rst_n] [get_bd_pins r_brief_stage0_0/ap_rst_n] [get_bd_pins r_brief_stage1_0/ap_rst_n] [get_bd_pins rgb_to_gray_0/ap_rst_n]
+  connect_bd_net -net fastThreshold_1 [get_bd_pins fastThreshold] [get_bd_pins fast_corner_0/fastThreshold] [get_bd_pins fast_corner_1/fastThreshold] [get_bd_pins fast_corner_2/fastThreshold]
+  connect_bd_net -net gauss_resize_0_out_cols [get_bd_pins fast_corner_1/cols] [get_bd_pins gauss_resize_0/colsScaledDown] [get_bd_pins gauss_resize_1/cols]
+  connect_bd_net -net gauss_resize_0_out_rows [get_bd_pins fast_corner_1/rows] [get_bd_pins gauss_resize_0/rowsScaledDown] [get_bd_pins gauss_resize_1/rows]
+  connect_bd_net -net gauss_resize_1_colsScaledDown [get_bd_pins fast_corner_2/cols] [get_bd_pins gauss_resize_1/colsScaledDown]
+  connect_bd_net -net gauss_resize_1_rowsScaledDown [get_bd_pins fast_corner_2/rows] [get_bd_pins gauss_resize_1/rowsScaledDown]
+  connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins s_axi_ctrl_aclk] [get_bd_pins axis_broadcaster_0/aclk] [get_bd_pins axis_data_fifo_0/s_axis_aclk] [get_bd_pins axis_data_fifo_1/s_axis_aclk] [get_bd_pins axis_data_fifo_2/s_axis_aclk] [get_bd_pins axis_switch_0/aclk] [get_bd_pins axis_switch_0/s_axi_ctrl_aclk] [get_bd_pins descriptor_merger_0/ap_clk] [get_bd_pins fast_corner_0/ap_clk] [get_bd_pins fast_corner_1/ap_clk] [get_bd_pins fast_corner_2/ap_clk] [get_bd_pins gauss_resize_0/ap_clk] [get_bd_pins gauss_resize_1/ap_clk] [get_bd_pins r_brief_stage0_0/ap_clk] [get_bd_pins r_brief_stage1_0/ap_clk] [get_bd_pins r_brief_stage2_0/ap_clk] [get_bd_pins rgb_to_gray_0/ap_clk]
+  connect_bd_net -net rst_ps7_0_100M_peripheral_aresetn [get_bd_pins s_axi_ctrl_aresetn] [get_bd_pins axis_broadcaster_0/aresetn] [get_bd_pins axis_data_fifo_0/s_axis_aresetn] [get_bd_pins axis_data_fifo_1/s_axis_aresetn] [get_bd_pins axis_data_fifo_2/s_axis_aresetn] [get_bd_pins axis_switch_0/aresetn] [get_bd_pins axis_switch_0/s_axi_ctrl_aresetn] [get_bd_pins descriptor_merger_0/ap_rst_n] [get_bd_pins fast_corner_0/ap_rst_n] [get_bd_pins fast_corner_1/ap_rst_n] [get_bd_pins fast_corner_2/ap_rst_n] [get_bd_pins gauss_resize_0/ap_rst_n] [get_bd_pins gauss_resize_1/ap_rst_n] [get_bd_pins r_brief_stage0_0/ap_rst_n] [get_bd_pins r_brief_stage1_0/ap_rst_n] [get_bd_pins r_brief_stage2_0/ap_rst_n] [get_bd_pins rgb_to_gray_0/ap_rst_n]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -485,6 +510,39 @@ proc create_hier_cell_hdmi { parentCell nameHier } {
    CONFIG.C_HAS_ASYNC_CLK {1} \
  ] $v_vid_in_axi4s_0
 
+  # Create instance: xlconcat_0, and set properties
+  set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
+  set_property -dict [ list \
+   CONFIG.NUM_PORTS {3} \
+ ] $xlconcat_0
+
+  # Create instance: xlslice_blue, and set properties
+  set xlslice_blue [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_blue ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {23} \
+   CONFIG.DIN_TO {16} \
+   CONFIG.DIN_WIDTH {24} \
+   CONFIG.DOUT_WIDTH {8} \
+ ] $xlslice_blue
+
+  # Create instance: xlslice_green, and set properties
+  set xlslice_green [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_green ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {7} \
+   CONFIG.DIN_TO {0} \
+   CONFIG.DIN_WIDTH {24} \
+   CONFIG.DOUT_WIDTH {8} \
+ ] $xlslice_green
+
+  # Create instance: xlslice_red, and set properties
+  set xlslice_red [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_red ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {15} \
+   CONFIG.DIN_TO {8} \
+   CONFIG.DIN_WIDTH {24} \
+   CONFIG.DOUT_WIDTH {8} \
+ ] $xlslice_red
+
   # Create interface connections
   connect_bd_intf_net -intf_net TMDS_0_1 [get_bd_intf_pins hdmi_in] [get_bd_intf_pins dvi2rgb_0/TMDS]
   connect_bd_intf_net -intf_net dvi2rgb_0_DDC [get_bd_intf_pins hdmi_in_ddc] [get_bd_intf_pins dvi2rgb_0/DDC]
@@ -492,14 +550,18 @@ proc create_hier_cell_hdmi { parentCell nameHier } {
 
   # Create port connections
   connect_bd_net -net dvi2rgb_0_PixelClk [get_bd_pins dvi2rgb_0/PixelClk] [get_bd_pins v_vid_in_axi4s_0/vid_io_in_clk]
-  connect_bd_net -net dvi2rgb_0_vid_pData [get_bd_pins dvi2rgb_0/vid_pData] [get_bd_pins v_vid_in_axi4s_0/vid_data]
+  connect_bd_net -net dvi2rgb_0_vid_pData [get_bd_pins dvi2rgb_0/vid_pData] [get_bd_pins xlslice_blue/Din] [get_bd_pins xlslice_green/Din] [get_bd_pins xlslice_red/Din]
   connect_bd_net -net dvi2rgb_0_vid_pHSync [get_bd_pins dvi2rgb_0/vid_pHSync] [get_bd_pins v_vid_in_axi4s_0/vid_hsync]
   connect_bd_net -net dvi2rgb_0_vid_pVDE [get_bd_pins dvi2rgb_0/vid_pVDE] [get_bd_pins v_vid_in_axi4s_0/vid_active_video]
   connect_bd_net -net dvi2rgb_0_vid_pVSync [get_bd_pins dvi2rgb_0/vid_pVSync] [get_bd_pins v_vid_in_axi4s_0/vid_vsync]
   connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins aclk] [get_bd_pins v_vid_in_axi4s_0/aclk]
   connect_bd_net -net processing_system7_0_FCLK_CLK1 [get_bd_pins RefClk] [get_bd_pins dvi2rgb_0/RefClk]
   connect_bd_net -net rst_ps7_0_100M_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins dvi2rgb_0/aRst_n] [get_bd_pins v_vid_in_axi4s_0/aresetn]
+  connect_bd_net -net xlconcat_0_dout [get_bd_pins v_vid_in_axi4s_0/vid_data] [get_bd_pins xlconcat_0/dout]
   connect_bd_net -net xlconstant_0_dout [get_bd_pins hdmi_in_hpd] [get_bd_pins v_vid_in_axi4s_0/aclken] [get_bd_pins v_vid_in_axi4s_0/axis_enable] [get_bd_pins v_vid_in_axi4s_0/vid_io_in_ce]
+  connect_bd_net -net xlslice_blue_Dout [get_bd_pins xlconcat_0/In0] [get_bd_pins xlslice_red/Dout]
+  connect_bd_net -net xlslice_green_Dout [get_bd_pins xlconcat_0/In1] [get_bd_pins xlslice_green/Dout]
+  connect_bd_net -net xlslice_red_Dout [get_bd_pins xlconcat_0/In2] [get_bd_pins xlslice_blue/Dout]
 
   # Restore current instance
   current_bd_instance $oldCurInst

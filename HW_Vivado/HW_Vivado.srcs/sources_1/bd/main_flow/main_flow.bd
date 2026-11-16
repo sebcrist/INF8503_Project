@@ -5037,6 +5037,9 @@
             "xci_path": "ip\\main_flow_axi_vdma_0_0\\main_flow_axi_vdma_0_0.xci",
             "inst_hier_path": "dma_block/axi_vdma_0",
             "parameters": {
+              "c_enable_vert_flip": {
+                "value": "0"
+              },
               "c_include_mm2s": {
                 "value": "1"
               },
@@ -5054,6 +5057,9 @@
               },
               "c_mm2s_max_burst_length": {
                 "value": "64"
+              },
+              "c_num_fstores": {
+                "value": "2"
               },
               "c_s2mm_max_burst_length": {
                 "value": "64"
