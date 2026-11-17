@@ -5059,7 +5059,7 @@
                 "value": "64"
               },
               "c_num_fstores": {
-                "value": "2"
+                "value": "3"
               },
               "c_s2mm_max_burst_length": {
                 "value": "64"
