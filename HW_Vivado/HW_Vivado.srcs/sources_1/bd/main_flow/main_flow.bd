@@ -16,19 +16,19 @@
       "orb_pipeline": {
         "axis_switch_0": "",
         "axis_broadcaster_0": "",
-        "descriptor_merger_0": "",
-        "fast_corner_0": "",
-        "fast_corner_1": "",
-        "rgb_to_gray_0": "",
-        "fast_corner_2": "",
         "axis_data_fifo_0": "",
         "axis_data_fifo_1": "",
         "axis_data_fifo_2": "",
+        "descriptor_merger_0": "",
+        "fast_corner_0": "",
+        "fast_corner_1": "",
+        "fast_corner_2": "",
         "gauss_resize_0": "",
         "gauss_resize_1": "",
         "r_brief_stage0_0": "",
         "r_brief_stage1_0": "",
-        "r_brief_stage2_0": ""
+        "r_brief_stage2_0": "",
+        "rgb_to_gray_0": ""
       },
       "hdmi": {
         "v_vid_in_axi4s_0": "",
@@ -307,6 +307,39 @@
             "xci_path": "ip\\main_flow_axis_broadcaster_0_0\\main_flow_axis_broadcaster_0_0.xci",
             "inst_hier_path": "orb_pipeline/axis_broadcaster_0"
           },
+          "axis_data_fifo_0": {
+            "vlnv": "xilinx.com:ip:axis_data_fifo:2.0",
+            "xci_name": "main_flow_axis_data_fifo_0_0",
+            "xci_path": "ip\\main_flow_axis_data_fifo_0_0\\main_flow_axis_data_fifo_0_0.xci",
+            "inst_hier_path": "orb_pipeline/axis_data_fifo_0",
+            "parameters": {
+              "FIFO_DEPTH": {
+                "value": "16384"
+              }
+            }
+          },
+          "axis_data_fifo_1": {
+            "vlnv": "xilinx.com:ip:axis_data_fifo:2.0",
+            "xci_name": "main_flow_axis_data_fifo_1_1",
+            "xci_path": "ip\\main_flow_axis_data_fifo_1_1\\main_flow_axis_data_fifo_1_1.xci",
+            "inst_hier_path": "orb_pipeline/axis_data_fifo_1",
+            "parameters": {
+              "FIFO_DEPTH": {
+                "value": "2048"
+              }
+            }
+          },
+          "axis_data_fifo_2": {
+            "vlnv": "xilinx.com:ip:axis_data_fifo:2.0",
+            "xci_name": "main_flow_axis_data_fifo_1_0",
+            "xci_path": "ip\\main_flow_axis_data_fifo_1_0\\main_flow_axis_data_fifo_1_0.xci",
+            "inst_hier_path": "orb_pipeline/axis_data_fifo_2",
+            "parameters": {
+              "FIFO_DEPTH": {
+                "value": "8192"
+              }
+            }
+          },
           "descriptor_merger_0": {
             "vlnv": "xilinx.com:hls:descriptor_merger:1.0",
             "xci_name": "main_flow_descriptor_merger_0_0",
@@ -325,50 +358,11 @@
             "xci_path": "ip\\main_flow_fast_corner_1_0\\main_flow_fast_corner_1_0.xci",
             "inst_hier_path": "orb_pipeline/fast_corner_1"
           },
-          "rgb_to_gray_0": {
-            "vlnv": "xilinx.com:hls:rgb_to_gray:1.0",
-            "xci_name": "main_flow_rgb_to_gray_0_0",
-            "xci_path": "ip\\main_flow_rgb_to_gray_0_0\\main_flow_rgb_to_gray_0_0.xci",
-            "inst_hier_path": "orb_pipeline/rgb_to_gray_0"
-          },
           "fast_corner_2": {
             "vlnv": "xilinx.com:hls:fast_corner:1.0",
             "xci_name": "main_flow_fast_corner_2_0",
             "xci_path": "ip\\main_flow_fast_corner_2_0\\main_flow_fast_corner_2_0.xci",
             "inst_hier_path": "orb_pipeline/fast_corner_2"
-          },
-          "axis_data_fifo_0": {
-            "vlnv": "xilinx.com:ip:axis_data_fifo:2.0",
-            "xci_name": "main_flow_axis_data_fifo_0_0",
-            "xci_path": "ip\\main_flow_axis_data_fifo_0_0\\main_flow_axis_data_fifo_0_0.xci",
-            "inst_hier_path": "orb_pipeline/axis_data_fifo_0",
-            "parameters": {
-              "FIFO_DEPTH": {
-                "value": "8192"
-              }
-            }
-          },
-          "axis_data_fifo_1": {
-            "vlnv": "xilinx.com:ip:axis_data_fifo:2.0",
-            "xci_name": "main_flow_axis_data_fifo_0_1",
-            "xci_path": "ip\\main_flow_axis_data_fifo_0_1\\main_flow_axis_data_fifo_0_1.xci",
-            "inst_hier_path": "orb_pipeline/axis_data_fifo_1",
-            "parameters": {
-              "FIFO_DEPTH": {
-                "value": "2048"
-              }
-            }
-          },
-          "axis_data_fifo_2": {
-            "vlnv": "xilinx.com:ip:axis_data_fifo:2.0",
-            "xci_name": "main_flow_axis_data_fifo_1_0",
-            "xci_path": "ip\\main_flow_axis_data_fifo_1_0\\main_flow_axis_data_fifo_1_0.xci",
-            "inst_hier_path": "orb_pipeline/axis_data_fifo_2",
-            "parameters": {
-              "FIFO_DEPTH": {
-                "value": "4096"
-              }
-            }
           },
           "gauss_resize_0": {
             "vlnv": "xilinx.com:hls:gauss_resize:1.0",
@@ -399,6 +393,12 @@
             "xci_name": "main_flow_r_brief_stage2_0_0",
             "xci_path": "ip\\main_flow_r_brief_stage2_0_0\\main_flow_r_brief_stage2_0_0.xci",
             "inst_hier_path": "orb_pipeline/r_brief_stage2_0"
+          },
+          "rgb_to_gray_0": {
+            "vlnv": "xilinx.com:hls:rgb_to_gray:1.0",
+            "xci_name": "main_flow_rgb_to_gray_0_0",
+            "xci_path": "ip\\main_flow_rgb_to_gray_0_0\\main_flow_rgb_to_gray_0_0.xci",
+            "inst_hier_path": "orb_pipeline/rgb_to_gray_0"
           }
         },
         "interface_nets": {
@@ -558,16 +558,16 @@
             "ports": [
               "cols",
               "fast_corner_0/cols",
-              "rgb_to_gray_0/cols",
-              "gauss_resize_0/cols"
+              "gauss_resize_0/cols",
+              "rgb_to_gray_0/cols"
             ]
           },
           "axi_gpio_1_gpio_io_o": {
             "ports": [
               "rows",
               "fast_corner_0/rows",
-              "rgb_to_gray_0/rows",
-              "gauss_resize_0/rows"
+              "gauss_resize_0/rows",
+              "rgb_to_gray_0/rows"
             ]
           },
           "fastThreshold_1": {
@@ -610,19 +610,19 @@
               "axis_switch_0/s_axi_ctrl_aclk",
               "axis_switch_0/aclk",
               "axis_broadcaster_0/aclk",
-              "descriptor_merger_0/ap_clk",
-              "fast_corner_0/ap_clk",
-              "fast_corner_1/ap_clk",
-              "rgb_to_gray_0/ap_clk",
-              "fast_corner_2/ap_clk",
               "axis_data_fifo_0/s_axis_aclk",
               "axis_data_fifo_1/s_axis_aclk",
               "axis_data_fifo_2/s_axis_aclk",
+              "descriptor_merger_0/ap_clk",
+              "fast_corner_0/ap_clk",
+              "fast_corner_1/ap_clk",
+              "fast_corner_2/ap_clk",
               "gauss_resize_0/ap_clk",
               "gauss_resize_1/ap_clk",
               "r_brief_stage0_0/ap_clk",
               "r_brief_stage1_0/ap_clk",
-              "r_brief_stage2_0/ap_clk"
+              "r_brief_stage2_0/ap_clk",
+              "rgb_to_gray_0/ap_clk"
             ]
           },
           "rst_ps7_0_100M_peripheral_aresetn": {
@@ -631,19 +631,19 @@
               "axis_switch_0/s_axi_ctrl_aresetn",
               "axis_switch_0/aresetn",
               "axis_broadcaster_0/aresetn",
-              "descriptor_merger_0/ap_rst_n",
-              "fast_corner_0/ap_rst_n",
-              "fast_corner_1/ap_rst_n",
-              "rgb_to_gray_0/ap_rst_n",
-              "fast_corner_2/ap_rst_n",
               "axis_data_fifo_0/s_axis_aresetn",
               "axis_data_fifo_1/s_axis_aresetn",
               "axis_data_fifo_2/s_axis_aresetn",
+              "descriptor_merger_0/ap_rst_n",
+              "fast_corner_0/ap_rst_n",
+              "fast_corner_1/ap_rst_n",
+              "fast_corner_2/ap_rst_n",
               "gauss_resize_0/ap_rst_n",
               "gauss_resize_1/ap_rst_n",
               "r_brief_stage0_0/ap_rst_n",
               "r_brief_stage1_0/ap_rst_n",
-              "r_brief_stage2_0/ap_rst_n"
+              "r_brief_stage2_0/ap_rst_n",
+              "rgb_to_gray_0/ap_rst_n"
             ]
           }
         }
@@ -712,8 +712,8 @@
           },
           "xlslice_blue": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "main_flow_xlslice_0_0",
-            "xci_path": "ip\\main_flow_xlslice_0_0\\main_flow_xlslice_0_0.xci",
+            "xci_name": "main_flow_xlslice_blue_0",
+            "xci_path": "ip\\main_flow_xlslice_blue_0\\main_flow_xlslice_blue_0.xci",
             "inst_hier_path": "hdmi/xlslice_blue",
             "parameters": {
               "DIN_FROM": {
@@ -732,8 +732,8 @@
           },
           "xlslice_green": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "main_flow_xlslice_0_1",
-            "xci_path": "ip\\main_flow_xlslice_0_1\\main_flow_xlslice_0_1.xci",
+            "xci_name": "main_flow_xlslice_green_0",
+            "xci_path": "ip\\main_flow_xlslice_green_0\\main_flow_xlslice_green_0.xci",
             "inst_hier_path": "hdmi/xlslice_green",
             "parameters": {
               "DIN_FROM": {
@@ -752,8 +752,8 @@
           },
           "xlslice_red": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "main_flow_xlslice_0_2",
-            "xci_path": "ip\\main_flow_xlslice_0_2\\main_flow_xlslice_0_2.xci",
+            "xci_name": "main_flow_xlslice_red_0",
+            "xci_path": "ip\\main_flow_xlslice_red_0\\main_flow_xlslice_red_0.xci",
             "inst_hier_path": "hdmi/xlslice_red",
             "parameters": {
               "DIN_FROM": {
@@ -2399,12 +2399,6 @@
           },
           "PCW_S_AXI_HP1_ID_WIDTH": {
             "value": "6"
-          },
-          "PCW_S_AXI_HP2_DATA_WIDTH": {
-            "value": "64"
-          },
-          "PCW_S_AXI_HP3_DATA_WIDTH": {
-            "value": "64"
           },
           "PCW_TPIU_PERIPHERAL_CLKSRC": {
             "value": "External"

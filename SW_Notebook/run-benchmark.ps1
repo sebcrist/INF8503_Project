@@ -63,30 +63,29 @@ Write-Host "Transferred $($filesToCopy.Count) file(s) successfully." -Foreground
 # --- 3. COMPILE C++ ON PYNQ ---
 Write-Host "`n[2/3] Compiling C++ files on the PYNQ-Z2..." -ForegroundColor Cyan
 
-$compileLines = [System.Collections.Generic.List[string]]::new()
-$compileLines.Add("set -e")
-$compileLines.Add("cd '$TargetDir'")
+$compileScript = @"
+set -e
+cd '$TargetDir'
 
-foreach ($cpp in $cppFiles) {
-    if ($cpp.Name -eq "fpga_bench.cpp") {
-        $compileLines.Add("echo 'Compiling fpga_bench.cpp -> libfpga_bench.so...'")
-        $compileLines.Add("g++ -O3 -shared -fPIC -Wno-psabi -mcpu=cortex-a9 -mfpu=neon -fopenmp fpga_bench.cpp -o libfpga_bench.so")
-    }
-    else {
-        $outName = [System.IO.Path]::GetFileNameWithoutExtension($cpp.Name)
-        $usesOpenCV = Select-String -Path $cpp.FullName -Pattern "opencv2" -Quiet
-        $compileLines.Add("echo 'Compiling $($cpp.Name) -> $outName...'")
-        if ($usesOpenCV) {
-            $compileLines.Add("OCV_FLAGS=`$(pkg-config --cflags --libs opencv4 2>/dev/null || pkg-config --cflags --libs opencv)")
-            $compileLines.Add("g++ -O3 -Wno-psabi -mcpu=cortex-a9 -mfpu=neon '$($cpp.Name)' `$OCV_FLAGS -o '$outName'")
-        }
-        else {
-            $compileLines.Add("g++ -O3 -Wno-psabi -mcpu=cortex-a9 -mfpu=neon -fopenmp '$($cpp.Name)' -o '$outName'")
-        }
-    }
-}
+echo '1/3 Compiling fpga_bench.cpp -> libfpga_bench.so...'
+g++ -O3 -shared -fPIC -Wno-psabi -mcpu=cortex-a9 -mfpu=neon -fopenmp fpga_bench.cpp -o libfpga_bench.so
 
-$remoteCompileScript = ($compileLines -join "`n") + "`n"
+if [ -f "opencv_bench.cpp" ]; then
+    echo '2/3 Compiling opencv_bench.cpp -> opencv_bench...'
+    OCV_FLAGS=`$(pkg-config --cflags --libs opencv4 2>/dev/null || pkg-config --cflags --libs opencv)
+    g++ -O3 -Wno-psabi -mcpu=cortex-a9 -mfpu=neon -fopenmp opencv_bench.cpp $OCV_FLAGS -o opencv_bench
+fi
+
+if [ -f "orb_pipeline.cpp" ]; then
+    echo '3/3 Compiling orb_pipeline.cpp -> liborb_pipeline.so...'
+    OCV_FLAGS=`$(pkg-config --cflags --libs opencv4 2>/dev/null || pkg-config --cflags --libs opencv)
+    g++ -O3 -shared -fPIC -Wno-psabi -mcpu=cortex-a9 -mfpu=neon -fopenmp orb_pipeline.cpp `$OCV_FLAGS -o liborb_pipeline.so
+fi
+
+echo 'All compilations completed successfully!'
+"@
+
+$remoteCompileScript = ($compileScript -replace "`r`n", "`n")
 $remoteCompileScript | ssh -i "$sshKeyPath" "${BoardUser}@${BoardHost}" "tr -d '\r' | bash -se"
 if ($LASTEXITCODE -ne 0) {
     Write-Host "C++ compilation failed on the PYNQ-Z2." -ForegroundColor Red

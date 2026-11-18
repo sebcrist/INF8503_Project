@@ -105,7 +105,7 @@ g++ -O3 -shared -fPIC -Wno-psabi -mcpu=cortex-a9 -mfpu=neon -fopenmp fpga_bench.
 if [ -f "opencv_bench.cpp" ]; then
     echo '2/3 Compiling opencv_bench.cpp -> opencv_bench...'
     OCV_FLAGS=`$(pkg-config --cflags --libs opencv4 2>/dev/null || pkg-config --cflags --libs opencv)
-    g++ -O3 -Wno-psabi -mcpu=cortex-a9 -mfpu=neon opencv_bench.cpp `$OCV_FLAGS -o opencv_bench
+    g++ -O3 -Wno-psabi -mcpu=cortex-a9 -mfpu=neon -fopenmp opencv_bench.cpp $OCV_FLAGS -o opencv_bench
 fi
 
 if [ -f "orb_pipeline.cpp" ]; then

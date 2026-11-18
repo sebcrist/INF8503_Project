@@ -6,6 +6,13 @@
 #include <chrono>
 #include <numeric>
 #include <algorithm>
+#include <cstdint>
+#include <cstring>
+#include <omp.h>
+
+struct CachedDescriptor {
+    uint64_t desc[4];
+};
 
 cv::Mat letterbox(const cv::Mat& img, int target_w = 1280, int target_h = 720) {
     double scale = std::min(static_cast<double>(target_w) / img.cols,
@@ -62,16 +69,69 @@ void run_orb_scenario(
         orb->detectAndCompute(scene_720p, cv::noArray(), scene_kpts, scene_descs);
         auto t1 = clock::now();
 
+        std::vector<CachedDescriptor> ref_cached(ref_descs.rows);
+        for (int r = 0; r < ref_descs.rows; ++r) {
+            std::memcpy(ref_cached[r].desc, ref_descs.ptr<uint8_t>(r), 32);
+        }
+        std::vector<CachedDescriptor> scene_cached;
+
         int good_matches = 0;
-        matches.clear();
-        if (!ref_descs.empty() && !scene_descs.empty()) {
-            bf->match(ref_descs, scene_descs, matches);
-            for (const auto& m : matches) {
-                if (m.distance < 60.0f) {
-                    good_matches++;
+        const int num_ref = static_cast<int>(ref_cached.size());
+        const int n_scene = scene_descs.rows;
+
+        if (num_ref > 0 && n_scene > 0) {
+            scene_cached.resize(n_scene);
+            for (int s = 0; s < n_scene; ++s) {
+                std::memcpy(scene_cached[s].desc, scene_descs.ptr<uint8_t>(s), 32);
+            }
+
+            #pragma omp parallel for num_threads(2) reduction(+:good_matches) schedule(static)
+            for (int r = 0; r < num_ref; ++r) {
+                const uint64_t r0 = ref_cached[r].desc[0];
+                const uint64_t r1 = ref_cached[r].desc[1];
+                const uint64_t r2 = ref_cached[r].desc[2];
+                const uint64_t r3 = ref_cached[r].desc[3];
+
+                int best_dist = 256;
+                int best_s = -1;
+
+                for (int s = 0; s < n_scene; ++s) {
+                    int dist = __builtin_popcountll(r0 ^ scene_cached[s].desc[0]) +
+                               __builtin_popcountll(r1 ^ scene_cached[s].desc[1]) +
+                               __builtin_popcountll(r2 ^ scene_cached[s].desc[2]) +
+                               __builtin_popcountll(r3 ^ scene_cached[s].desc[3]);
+                    if (dist < best_dist) {
+                        best_dist = dist;
+                        best_s = s;
+                    }
+                }
+
+                if (best_s >= 0 && best_dist < 60) {
+                    const uint64_t s0 = scene_cached[best_s].desc[0];
+                    const uint64_t s1 = scene_cached[best_s].desc[1];
+                    const uint64_t s2 = scene_cached[best_s].desc[2];
+                    const uint64_t s3 = scene_cached[best_s].desc[3];
+
+                    bool is_mutual_best = true;
+                    for (int r2_idx = 0; r2_idx < num_ref; ++r2_idx) {
+                        if (r2_idx == r) continue;
+                        int dist_back = __builtin_popcountll(s0 ^ ref_cached[r2_idx].desc[0]) +
+                                        __builtin_popcountll(s1 ^ ref_cached[r2_idx].desc[1]) +
+                                        __builtin_popcountll(s2 ^ ref_cached[r2_idx].desc[2]) +
+                                        __builtin_popcountll(s3 ^ ref_cached[r2_idx].desc[3]);
+                        if (dist_back < best_dist) {
+                            is_mutual_best = false;
+                            break;
+                        }
+                    }
+
+                    if (is_mutual_best) {
+                        good_matches++;
+                    }
                 }
             }
         }
+
         auto t2 = clock::now();
 
         if (iter >= warmup_frames) {
@@ -134,12 +194,12 @@ int main(int argc, char** argv) {
 
     cv::Ptr<cv::ORB> orb_tuned = cv::ORB::create(5000);
     orb_tuned->setFastThreshold(60);
-    orb_tuned->setNLevels(2);
+    orb_tuned->setNLevels(3);
     orb_tuned->setScaleFactor(2.0f);
     orb_tuned->setScoreType(cv::ORB::FAST_SCORE);
 
     run_orb_scenario(
-        "OPENCV C++ - ORB TUNED (Iso-Hardware : 2 scales, 2.0x, FAST, thr=60)",
+        "OPENCV C++ - ORB TUNED (Iso-Hardware : 3 scales, 2.0x, FAST, thr=60)",
         orb_tuned, ref_720p, scene_720p, num_frames, warmup_frames
     );
     cv::Ptr<cv::ORB> orb_std = cv::ORB::create();
