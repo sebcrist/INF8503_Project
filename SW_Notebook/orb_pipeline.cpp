@@ -27,6 +27,11 @@ struct PipelineResult {
     int total_corners;
     double fps;
     int jpeg_size;
+    double unpack_ms;
+    double match_ms;
+    double ransac_ms;
+    double draw_encode_ms;
+    double cpp_total_ms;
 };
 
 int init_ref_descriptors(const void* virt_dma_buf, uint32_t max_dma_bytes) {
@@ -69,6 +74,8 @@ int process_and_draw_frame(
 ) {
     if (!frame_data || width <= 0 || height <= 0) return -1;
 
+    auto t_cpp_start = std::chrono::steady_clock::now();
+
     cv::Mat frame(height, width, CV_8UC3, frame_data);
 
     const RawOrbPacket* dma_packets = reinterpret_cast<const RawOrbPacket*>(virt_dma_buf);
@@ -90,6 +97,8 @@ int process_and_draw_frame(
             scene_pts.push_back(cv::Point2f(static_cast<float>(dma_packets[i].x), static_cast<float>(dma_packets[i].y)));
         }
     }
+
+    auto t_after_unpack = std::chrono::steady_clock::now();
 
     int total_corners = static_cast<int>(scene_descs.size());
     int num_ref = static_cast<int>(g_ref_descs.size());
@@ -138,6 +147,8 @@ int process_and_draw_frame(
         }
     }
 
+    auto t_after_match = std::chrono::steady_clock::now();
+
     std::vector<cv::Point2f> filtered_pts;
     if (matched_scene_pts.size() >= 8) {
         std::vector<uchar> inliers;
@@ -151,6 +162,8 @@ int process_and_draw_frame(
     } else {
         filtered_pts = matched_scene_pts;
     }
+
+    auto t_after_ransac = std::chrono::steady_clock::now();
 
     if (filtered_pts.size() >= 4) {
         cv::RotatedRect box = cv::minAreaRect(filtered_pts);
@@ -191,10 +204,17 @@ int process_and_draw_frame(
         jpeg_size = 0;
     }
 
+    auto t_cpp_end = std::chrono::steady_clock::now();
+
     out_result->good_matches = good_matches;
     out_result->total_corners = total_corners;
     out_result->fps = current_fps;
     out_result->jpeg_size = jpeg_size;
+    out_result->unpack_ms = std::chrono::duration<double, std::milli>(t_after_unpack - t_cpp_start).count();
+    out_result->match_ms = std::chrono::duration<double, std::milli>(t_after_match - t_after_unpack).count();
+    out_result->ransac_ms = std::chrono::duration<double, std::milli>(t_after_ransac - t_after_match).count();
+    out_result->draw_encode_ms = std::chrono::duration<double, std::milli>(t_cpp_end - t_after_ransac).count();
+    out_result->cpp_total_ms = std::chrono::duration<double, std::milli>(t_cpp_end - t_cpp_start).count();
 
     return 0;
 }
