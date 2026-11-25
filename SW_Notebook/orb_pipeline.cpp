@@ -67,8 +67,6 @@ int process_and_draw_frame(
     int max_jpeg_buf_size,
     PipelineResult* out_result
 ) {
-    auto t_start = std::chrono::steady_clock::now();
-
     if (!frame_data || width <= 0 || height <= 0) return -1;
 
     cv::Mat frame(height, width, CV_8UC3, frame_data);
@@ -144,7 +142,7 @@ int process_and_draw_frame(
     if (matched_scene_pts.size() >= 8) {
         std::vector<uchar> inliers;
         cv::findFundamentalMat(matched_ref_pts, matched_scene_pts, cv::FM_RANSAC, ransac_thresh, 0.80, inliers);
-        
+
         for (size_t i = 0; i < matched_scene_pts.size(); ++i) {
             if (!inliers.empty() && inliers[i]) {
                 filtered_pts.push_back(matched_scene_pts[i]);
@@ -163,14 +161,21 @@ int process_and_draw_frame(
         }
     }
 
-    std::string stat_str = "Matches: " + std::to_string(good_matches) + 
+    std::string stat_str = "Matches: " + std::to_string(good_matches) +
                            " | Inliers: " + std::to_string(filtered_pts.size()) +
                            " | Corners: " + std::to_string(total_corners);
     cv::putText(frame, stat_str, cv::Point(15, 35), cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 255, 0), 2);
 
-    auto t_end = std::chrono::steady_clock::now();
-    double elapsed_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
-    double current_fps = (elapsed_ms > 0.0) ? (1000.0 / elapsed_ms) : 0.0;
+    static auto last_time = std::chrono::steady_clock::now();
+    static bool first_frame = true;
+    auto now = std::chrono::steady_clock::now();
+    double current_fps = 0.0;
+    if (!first_frame) {
+        double elapsed_ms = std::chrono::duration<double, std::milli>(now - last_time).count();
+        current_fps = (elapsed_ms > 0.0) ? (1000.0 / elapsed_ms) : 0.0;
+    }
+    first_frame = false;
+    last_time = now;
 
     std::string fps_str = "FPS: " + std::to_string(static_cast<int>(current_fps));
     cv::putText(frame, fps_str, cv::Point(15, 70), cv::FONT_HERSHEY_SIMPLEX, 0.8, cv::Scalar(0, 0, 255), 2);
@@ -183,7 +188,7 @@ int process_and_draw_frame(
     if (jpeg_size <= max_jpeg_buf_size) {
         std::memcpy(out_jpeg_buf, compressed_img.data(), jpeg_size);
     } else {
-        jpeg_size = 0; 
+        jpeg_size = 0;
     }
 
     out_result->good_matches = good_matches;
