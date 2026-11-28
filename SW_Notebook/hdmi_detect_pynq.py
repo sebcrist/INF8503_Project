@@ -501,7 +501,7 @@ def parse_descriptors(buf, count):
 
 
 def resolve_ref_paths(user_refs):
-    images_dir = os.path.join(PROJECT_DIR, "images")
+    images_dir = os.path.join(PROJECT_DIR, "images", "refs")
     valid_ext = (".jpg", ".jpeg", ".png", ".bmp")
     if not user_refs:
         if not os.path.isdir(images_dir):

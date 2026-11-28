@@ -143,7 +143,7 @@ void run_fpga_bench(
         size_t num_packets = bytes_transferred / sizeof(RawOrbPacket);
         if (num_packets > max_packets) num_packets = max_packets;
 
-        size_t actual_corners = (num_packets > 0) ? (num_packets - 3) : 0;
+        size_t actual_corners = (num_packets > 3) ? (num_packets - 3) : 0;
 
         scene_descs.clear();
         if (scenario_mode > 0 && actual_corners > 0) {
