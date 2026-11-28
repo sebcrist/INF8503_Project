@@ -92,29 +92,20 @@ if ($filesToCopy.Count -gt 0) {
     Write-Host "No source files found to transfer." -ForegroundColor Yellow
 }
 
-# --- 4. COMPILE ALL THREE C++ FILES ON PYNQ ---
-Write-Host "`n[4/4] Compiling all C++ modules on the PYNQ-Z2..." -ForegroundColor Cyan
+# --- 4. COMPILE C++ ON PYNQ --- # changed
+Write-Host "`n[4/4] Compiling C++ module on the PYNQ-Z2..." -ForegroundColor Cyan # changed
 
 $compileScript = @"
 set -e
 cd '$TargetDir'
 
-echo '1/3 Compiling fpga_bench.cpp -> libfpga_bench.so...'
-g++ -O3 -shared -fPIC -Wno-psabi -mcpu=cortex-a9 -mfpu=neon -fopenmp fpga_bench.cpp -o libfpga_bench.so
-
-if [ -f "opencv_bench.cpp" ]; then
-    echo '2/3 Compiling opencv_bench.cpp -> opencv_bench...'
-    OCV_FLAGS=`$(pkg-config --cflags --libs opencv4 2>/dev/null || pkg-config --cflags --libs opencv)
-    g++ -O3 -Wno-psabi -mcpu=cortex-a9 -mfpu=neon -fopenmp opencv_bench.cpp $OCV_FLAGS -o opencv_bench
-fi
-
 if [ -f "orb_pipeline.cpp" ]; then
-    echo '3/3 Compiling orb_pipeline.cpp -> liborb_pipeline.so...'
+    echo 'Compiling orb_pipeline.cpp -> liborb_pipeline.so...' # changed
     OCV_FLAGS=`$(pkg-config --cflags --libs opencv4 2>/dev/null || pkg-config --cflags --libs opencv)
     g++ -O3 -shared -fPIC -Wno-psabi -mcpu=cortex-a9 -mfpu=neon -fopenmp orb_pipeline.cpp `$OCV_FLAGS -o liborb_pipeline.so
 fi
 
-echo 'All compilations completed successfully!'
+echo 'Compilation completed successfully!' # changed
 "@
 
 $remoteCompileScript = ($compileScript -replace "`r`n", "`n")
