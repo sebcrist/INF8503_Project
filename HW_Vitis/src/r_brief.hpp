@@ -15,7 +15,7 @@ typedef ap_axiu<512, 1, 1, 1> axiDescriptor;
 typedef ap_uint<8> pix_t;
 typedef ap_uint<1> flag_t;
 
-static const ap_uint<13> TAN_LUT[7] = { 108, 333, 591, 922, 1409, 2300, 4818 };
+static const ap_uint<14> TAN_LUT[8] = { 101, 311, 547, 840, 1248, 1916, 3376, 10397 };
 
 struct ColEvent {
     pix_t col[WIN_SZ];
@@ -29,16 +29,16 @@ static ap_uint<5> compute_angle_sector(int x, int y) {
     ap_uint<20> abs_x = (x >= 0) ? x : -x;
     ap_uint<20> abs_y = (y >= 0) ? y : -y;
     ap_uint<30> y_scaled = ap_uint<30>(abs_y) << 10;
-    ap_uint<5> k = 7;
-    for (int i = 6; i >= 0; i--) {
+    ap_uint<5> k = 8;
+    for (int i = 7; i >= 0; i--) {
 #pragma HLS UNROLL
-        if (ap_uint<33>(abs_x) * TAN_LUT[i] > y_scaled) k = i;
+        if (ap_uint<34>(abs_x) * TAN_LUT[i] > y_scaled) k = i;
     }
     ap_uint<5> sector = 0;
     if (x >= 0 && y >= 0) sector = k;
-    else if (x < 0 && y >= 0) sector = 15 - k;
-    else if (x < 0 && y < 0) sector = 15 + k;
-    else sector = (k == 0) ? ap_uint<5>(0) : ap_uint<5>(30 - k);
+    else if (x < 0 && y >= 0) sector = 16 - k;
+    else if (x < 0 && y < 0) sector = 16 + k;
+    else sector = (k == 0) ? ap_uint<5>(0) : ap_uint<5>(32 - k);
     return sector;
 }
 
@@ -136,12 +136,12 @@ void detect_and_queue(hls::stream<axiData>& streamIn,
 
             int next_m00 = m00_acc + int(S_in) - int(S_out);
             int next_m01 = m01_acc + int(m01_in) - int(m01_out);
-            int step_m10 = (RADIUS - 1) * int(S_in) + (RADIUS + 2) * int(S_out);
+            int step_m10 = RADIUS * int(S_in) + (RADIUS + 1) * int(S_out);
             int next_m10 = m10_acc - m00_acc + step_m10;
 
             m00_acc = (c == 0) ? int(S_in) : next_m00;
             m01_acc = (c == 0) ? int(m01_in) : next_m01;
-            m10_acc = (c == 0) ? ((RADIUS - 1) * int(S_in)) : next_m10;
+            m10_acc = (c == 0) ? (RADIUS * int(S_in)) : next_m10;
 
             if (r >= 2 * RADIUS && c >= 2 * RADIUS && center_mask) {
                 ev.is_corner = 1;
